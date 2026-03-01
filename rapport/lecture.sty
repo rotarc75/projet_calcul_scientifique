@@ -1,0 +1,96 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{lecture}[2026/02/16 Modele de cours]
+
+% Encodage et Polices
+\RequirePackage[T1]{fontenc}
+\RequirePackage[utf8]{inputenc}
+\RequirePackage{lmodern}
+
+% Paquets de base
+\RequirePackage{xcolor}
+\RequirePackage{geometry}
+\RequirePackage{amsmath, amssymb, amsthm}
+\RequirePackage{tcolorbox}
+\tcbuselibrary{skins, breakable, theorems}
+\RequirePackage{titlesec}
+
+
+
+\renewcommand{\thechapter}{\Roman{chapter}}
+\renewcommand{\thesection}{\arabic{section}}
+
+
+
+
+
+\definecolor{accentcolor}{HTML}{8A1538}
+
+% Configuration des styles
+\tcbset{
+    commonstyle/.style={
+        enhanced,
+        breakable,
+        before skip=12pt,
+        after skip=12pt,
+        left=0pt,
+        right=0pt,
+        coltitle=accentcolor,
+        fonttitle=\bfseries,
+        description font=\normalfont\itshape\color{accentcolor},
+        frame empty,
+        interior empty,
+        colback=white,
+        separator sign={.\!},
+        top=-3pt,
+    },
+    simpleblock/.style={commonstyle},
+    importantblock/.style={
+        commonstyle,
+        borderline west={1.5pt}{0pt}{accentcolor},
+        left=8pt,
+    }
+}
+
+
+% Définition des blocs
+
+\newcounter{compteurcours}[section]
+\renewcommand{\thecompteurcours}{\thesection.\arabic{compteurcours}}
+
+\newtcbtheorem[use counter=compteurcours]{definition}{Définition}{simpleblock}{def}
+\newtcbtheorem[use counter=compteurcours]{remark}{Remarque}{simpleblock}{rem}
+\newtcbtheorem[use counter=compteurcours]{exemple}{Exemple}{simpleblock}{ex}
+\newtcbtheorem[use counter=compteurcours]{theoreme}{Théorème}{importantblock}{thm}
+\newtcbtheorem[use counter=compteurcours]{proposition}{Proposition}{importantblock}{prop}
+
+
+
+% Titre du poly
+\newcommand{\makelecturetitle}[3]{
+    \begin{center}
+        {\color{accentcolor}\hrule height 2pt}\vspace{0.5cm}
+        {\color{accentcolor}\Large\scshape #1}\par\vspace{0.3cm}
+        {\color{accentcolor}\Huge\bfseries #2}\par\vspace{0.5cm}
+        {\color{accentcolor}\hrule height 2pt}\vspace{0.8cm}
+        {\large\itshape #3}
+    \end{center}
+    \vspace{1cm}
+}
+
+
+% Titre des chapitres
+\titleformat{\chapter}[display]
+  {\normalfont\Huge\bfseries\color{accentcolor}} % Format du texte
+  {Chapitre \thechapter.} % Le label
+  {0pt} % Espace vertical entre le label et le titre
+  {}
+
+
+% Titre des sections
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{accentcolor}}
+  {\thesection.}
+  {0.5em}
+  {}
+
+
