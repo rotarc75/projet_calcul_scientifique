@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "noeud.hpp"
+#include "triangle.hpp"
 
 using namespace std;
 
@@ -20,35 +21,43 @@ vector<double> Subdiv(double a, int N){
 int numgb(int N, int M, int i, int j){ return (N+1)*j + i; }
 
 //Fonction qui étant donné entier s valide, donne les coordonnées du noeud
-tuple<int> invnumbg(int N, int M,int s){
-    return (s % (N+1),s / (N+1));
+tuple<int,int> invnumgb(int N, int M,int s){
+    return {s % (N+1),s / (N+1)};
 }
 
-//Fonction qui étant donné un pavé de NM rectangles renvoie une matrice qui contient les triangles
+//Fonction qui étant donné un pavé de NM rectangles renvoie un maillage triangulaire sous forme d'une liste qui contient les triangles
 vector<Triangle> maillageTR(int N, int M){
-    int K = 2*N*M;
-    vector<Triangle> TRG(K);
+    vector<Triangle> TRG(2*N*M);
+    int k = 0;
+    bool direction = true; // true pour / et false pour \
 
-    int l = 0;
+    for (int l = 0; l < M; l++){
+        for (int c = 0; c < N ; c++){
 
-    for (int j = 0; j < M; j++){
-        for (int i = 0; i < N; i++){
-            int bas_gauche = numgb(N, M, i, j);
-            int bas_droit = numgb(N,M, i+1, j);
-            int haut_gauche = numgb(N, M, i, j+1);
-            int haut_droit = numgb(N, M, i+1, j+1);
+            //Pour alterner le sens des triangles à chaque petit rectangle
+            direction = (l+c)%2 == 0;
 
-            if ((i+j) % 2 == 0){
-                TRG[l] = Triangle(bas_gauche, haut_gauche, haut_droit);
-                TRG[l+1] = Triangle(bas_gauche, bas_droit, haut_droit);
+            // Calcul des coordonnées des quatres sommets du rectangle
+            int bas_g = numgb(N,M,c,l);
+            int bas_d = numgb(N,M,c+1,l);
+            int haut_g = numgb(N,M,c,l+1);
+            int haut_d = numgb(N,M,c+1,l+1);
+
+            // Création des triangles
+            if (direction){
+                TRG[k] = Triangle(bas_g,haut_g,haut_d);
+                TRG[k+1] = Triangle(bas_g,bas_d,haut_d);
             } else {
-                TRG[l] = Triangle(bas_gauche, bas_droit, haut_gauche);
-                TRG[l+1] = Triangle(bas_droit, haut_gauche, haut_droit);
+                TRG[k] = Triangle(bas_g,haut_g,bas_d);
+                TRG[k+1] = Triangle(haut_g,haut_d,bas_d);
             }
 
-            l += 2;
+            k += 2;
         }
     }
-    
+
     return TRG;
 }
+
+
+

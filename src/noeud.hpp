@@ -13,12 +13,4 @@ public:
     int getJ();
 };
 
-class Triangle {
-private:
-    int n_1, n_2, n_3; 
-
-public:
-    Triangle();
-    Triangle(int n_1, int n_2, int n_3);
-};
 #endif
