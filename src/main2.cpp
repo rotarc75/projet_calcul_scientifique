@@ -7,6 +7,9 @@
 
 using namespace std;
 
+const int N;
+const int M;
+
 // Fonction qui renvoie une subdivision uniforme de [-a,a]
 vector<double> Subdiv(double a, int N){
     vector<double> subdiv = vector<double>(N+1);
@@ -59,13 +62,7 @@ vector<Triangle> maillageTR(int N, int M){
     return TRG;
 }
 
-// Fonction qui renvoie la jacobienne de F_T
-vector<vector<double>> CalcMatBT(vector<double> xs, vector<double> ys){
-    double bt_00 = xs[1] - xs[0];
-    double bt_10 = ys[1] - ys[0];
-    double bt_01 = xs[2] - xs[0];
-    double bt_11 = ys[2] - ys[0];
+vector<vector<double>> CalcMatBT(Triangle T){
 
-    return {{bt_00,bt_01},{bt_10,bt_11}};
 }
 

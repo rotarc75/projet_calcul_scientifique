@@ -5,5 +5,3 @@ Triangle::Triangle(int n1, int n2, int n3){
     n2 = n2;
     n3 = n3;
 }
-
-Triangle::Triangle(){}
