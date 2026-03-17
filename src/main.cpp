@@ -1,7 +1,6 @@
 #include <tuple>
 #include <vector>
 
-
 #include "triangle.hpp"
 
 using namespace std;
@@ -24,7 +23,8 @@ tuple<int,int> invnumgb(int N, int M,int s){
     return {s % (N+1),s / (N+1)};
 }
 
-//Fonction qui étant donné un pavé de NM rectangles renvoie un maillage triangulaire sous forme d'une liste qui contient les triangles
+//Fonction qui étant donné un pavé de NM rectangles renvoie un maillage
+//triangulaire sous forme d'une liste qui contient les triangles
 vector<Triangle> maillageTR(int N, int M){
     vector<Triangle> TRG(2*N*M);
     int k = 0;
@@ -58,6 +58,25 @@ vector<Triangle> maillageTR(int N, int M){
     return TRG;
 }
 
+
+// Fonction qui renvoie les coordonnées des points du triangle
+tuple<vector<double>,vector<double>> CoordsTrig(double a, double b, int N,
+    int M, Triangle T){
+    vector<double> xs = vector<double>(3);
+    vector<double> ys = vector<double>(3);
+
+    // ATTENTION CA NE FONCTIONNE PAS ENCORE A CAUSE DE LA CLASSE TRIANGLE
+    for (int k = 0; k < 3; k++){
+        tuple<int,int> tup = invnumgb(N,M,T.get(k));
+        xs[k] = -a + (2*a)/N * get<0>(tup);
+        ys[k] = -b + (2*b)/N * get<1>(tup);
+
+    }
+
+    return {xs,ys};
+}
+
+
 // Fonction qui renvoie la jacobienne de F_T
 // Voir question 20, elle justifie ce calcul
 vector<vector<double>> CalcMatBT(vector<double> xs, vector<double> ys){
@@ -68,4 +87,25 @@ vector<vector<double>> CalcMatBT(vector<double> xs, vector<double> ys){
 
     return {{bt_00,bt_01},{bt_10,bt_11}};
 }
+
+
+vector<double> integ_eta_triang(double (* eta)(double),
+    vector<Triangle> maillage,int N, int M,double a){
+
+    vector<double> ET = vector<double>(maillage.size());
+
+    // Parcours du maillage
+    for (Triangle T : maillage){
+
+
+
+
+
+
+    }
+
+
+
+}
+
 
