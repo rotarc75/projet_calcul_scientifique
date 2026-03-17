@@ -1,4 +1,3 @@
-#include <iostream>
 #include <tuple>
 #include <vector>
 
@@ -60,6 +59,7 @@ vector<Triangle> maillageTR(int N, int M){
 }
 
 // Fonction qui renvoie la jacobienne de F_T
+// Voir question 20, elle justifie ce calcul
 vector<vector<double>> CalcMatBT(vector<double> xs, vector<double> ys){
     double bt_00 = xs[1] - xs[0];
     double bt_10 = ys[1] - ys[0];
