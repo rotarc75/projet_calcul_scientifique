@@ -1,3 +1,4 @@
+#include <iostream>
 #include <tuple>
 #include <vector>
 #include <stdlib.h>
@@ -180,4 +181,9 @@ vector<vector<double>> ReacTerm(tuple<vector<double>,vector<double>> xs_ys, doub
     return {{int_lambda_ii, int_lambda_ij, int_lambda_ij},
         {int_lambda_ij, int_lambda_ii, int_lambda_ij},
         {int_lambda_ij, int_lambda_ij,int_lambda_ii}};
+}
+
+
+int main(){
+    cout << "CA COMPILE\n";
 }
