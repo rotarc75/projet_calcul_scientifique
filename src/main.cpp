@@ -65,11 +65,10 @@ tuple<vector<double>,vector<double>> CoordsTrig(double a, double b, int N,
     vector<double> xs = vector<double>(3);
     vector<double> ys = vector<double>(3);
 
-    // ATTENTION CA NE FONCTIONNE PAS ENCORE A CAUSE DE LA CLASSE TRIANGLE
     for (int k = 0; k < 3; k++){
         tuple<int,int> tup = invnumgb(N,M,T.get(k));
         xs[k] = -a + (2*a)/N * get<0>(tup);
-        ys[k] = -b + (2*b)/N * get<1>(tup);
+        ys[k] = -b + (2*b)/M * get<1>(tup);
 
     }
 
@@ -89,23 +88,40 @@ vector<vector<double>> CalcMatBT(vector<double> xs, vector<double> ys){
 }
 
 
-vector<double> integ_eta_triang(double (* eta)(double),
-    vector<Triangle> maillage,int N, int M,double a){
+vector<double> integ_eta_triang(double (* eta)(double,double),
+    vector<Triangle> maillage,int N, int M,double a,double b){
 
     vector<double> ET = vector<double>(maillage.size());
+    int k = 0;
 
     // Parcours du maillage
     for (Triangle T : maillage){
 
+        tuple<vector<double>,vector<double>> xs_ys = CoordsTrig(a,b,N,M,T);
+        vector<double> xs = get<0>(xs_ys);
+        vector<double> ys = get<1>(xs_ys);
 
+        double det = (xs[1]-xs[0])*(ys[2]-ys[0]) - (ys[1]-ys[0])*(xs[2]-xs[0]);
 
+        // On determine les milieux des côtes de T
+        double m0x = (xs[0] + xs[1])/2.;
+        double m0y = (ys[0] + ys[1])/2.;
+        double m1x = (xs[1] + xs[2])/2.;
+        double m1y = (ys[1] + ys[2])/2.;
+        double m2x = (xs[0] + xs[2])/2.;
+        double m2y = (ys[0] + ys[2])/2.;
 
+        // Calculs de eta \circ F_T en les milieux des côtés du triangles T^
+        double eta0 = eta(m0x,m0y);
+        double eta1 = eta(m1x,m1y);
+        double eta2 = eta(m2x,m2y);
 
-
+        ET[k] = 1./6. *det * (eta0 + eta1 + eta2);
+        k++;
     }
 
-
-
+    return ET;
 }
+
 
 
