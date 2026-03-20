@@ -1,5 +1,6 @@
 #include <tuple>
 #include <vector>
+#include <stdlib.h>
 
 #include "triangle.hpp"
 
@@ -166,4 +167,17 @@ vector<double> integ_eta_triang(double (* eta)(double,double),
     };
  }
 
+vector<vector<double>> ReactTerm(tuple<vector<double>,vector<double>> xs_ys, double val){
+    vector<double> xs = get<0>(xs_ys);
+    vector<double> ys = get<1>(xs_ys);
 
+    double det = (xs[1]-xs[0])*(ys[2]-ys[0]) - (ys[1]-ys[0])*(xs[2]-xs[0]);
+
+    //Calcul des integrales des lambda_i * lambda_j
+    double int_lambda_ii = abs(det) * 1.0/12.0;
+    double int_lambda_ij = abs(det) * 1.0/24.0;
+
+    return {{int_lambda_ii, int_lambda_ij, int_lambda_ij},
+        {int_lambda_ij, int_lambda_ii, int_lambda_ij},
+        {int_lambda_ij, int_lambda_ij,int_lambda_ii}};
+}
