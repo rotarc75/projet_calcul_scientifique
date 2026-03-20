@@ -142,7 +142,7 @@ vector<double> integ_eta_triang(double (* eta)(double,double),
     vector<double> Nabla_lambdacha0 = {{-1,-1}}; //lambdacha0 = (1-x^-y^)
     vector<double> Nabla_lambdacha1 = {{1,0}}; //lambdacha1 = x^
     vector<double> Nabla_lambdacha2 = {{0,1}}; //lambdacha2 = y^
-    
+
     //Calcul des Nabla_lambda = BT*Nabla_lambdacha
     double nl00 = transp_inv_BT[0][0] * Nabla_lambdacha0[0] + transp_inv_BT[0][1] * Nabla_lambdacha0[1];
     double nl01 = transp_inv_BT[1][0] * Nabla_lambdacha0[0] + transp_inv_BT[1][1] * Nabla_lambdacha0[1];
@@ -161,13 +161,13 @@ vector<double> integ_eta_triang(double (* eta)(double,double),
     double val12 = val * (nl10 * nl20 + nl11 * nl21);
     double val22 = val * (nl20 * nl20 + nl21 * nl21);
 
-    return {{val00, val01, val02}, 
+    return {{val00, val01, val02},
         {val01, val11, val12},
         {val02, val12, val22}
     };
  }
 
-vector<vector<double>> ReactTerm(tuple<vector<double>,vector<double>> xs_ys, double val){
+vector<vector<double>> ReacTerm(tuple<vector<double>,vector<double>> xs_ys, double val){
     vector<double> xs = get<0>(xs_ys);
     vector<double> ys = get<1>(xs_ys);
 
