@@ -1,9 +1,9 @@
-#include <iostream>
 #include <tuple>
 #include <vector>
 #include <stdlib.h>
 
 #include "triangle.hpp"
+
 
 using namespace std;
 
@@ -184,6 +184,4 @@ vector<vector<double>> ReacTerm(tuple<vector<double>,vector<double>> xs_ys, doub
 }
 
 
-int main(){
-    cout << "CA COMPILE\n";
-}
+
