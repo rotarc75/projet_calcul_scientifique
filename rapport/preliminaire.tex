@@ -2,86 +2,17 @@
 
 \section{Préliminaires}
 
-Soit $\Omega = ]-a,a[ \times ]-b,b[ $ un rectangle de $\R^{2}$
-($a > 0$ et $b > 0$ sont donnés) et notons $\partial \Omega$ son bord défini par
-\[ \partial \Omega = \bar{\Omega} \setminus \Omega
-= \{ (x,y) \in [a,a] \times [-b,b] \text{ tels que } |x|
- = a \text{ ou } |y| = b\}
-\]
-
-On considère l'équation aux dérivées partielles
-
-\begin{equation}
-(1)\qquad
-- \frac{\partial}{\partial x}
-\left( \eta \frac{\partial u}{\partial x} \right) (x,y)
-- \frac{\partial}{\partial y}
-\left( \eta \frac{\partial u}{\partial y} \right) (x,y)
-+ \lambda u(x,y)
-= f
-\quad \text{pour } (x,y) \in \Omega,
-\end{equation}
-
-où $\lambda$ est une constante réelle strictement positive et
-$\eta$ et $f$ sont deux fonctions sur $\overline{\Omega}$ dans $\R$
-continues. On suppose de plus que $\eta$ est de classe $C^1$ sur
-$\overline{\Omega}$ et vérifie la propriété suivante : il existe une
-constante $\eta_0 > 0$ telle que
-
-\[
-\forall (x,y) \in \overline{\Omega}, \quad
-\eta(x,y) \ge \eta_0.
-\]
-
-On complète cette équation aux dérivées partielles avec la
-\textbf{condition aux limites} sur le bord :
-
-\begin{equation}
-(2)\qquad
-\frac{\partial u}{\partial x}(-a,y) = 0
-\quad \text{et} \quad
-\frac{\partial u}{\partial x}(a,y) = 0
-\quad \text{pour } -b \le y \le b,
-\end{equation}
-
-\begin{equation}
-(3)\qquad
-\frac{\partial u}{\partial y}(x,-b) = 0
-\quad \text{et} \quad
-\frac{\partial u}{\partial y}(x,b) = 0
-\quad \text{pour } -a \le x \le a.
-\end{equation}
-
-Soit $V$ l’espace des fonctions $v$ de classe $C^1$ sur
-$\overline{\Omega}$. On admet que le problème $(1)$--$(2)$--$(3)$
-ci-dessus admet une solution unique $u$ de classe $C^2$ sur
-$\overline{\Omega}$.
-
-
 
 
 \medskip
-\medskip
 
 
-\textit{Question 1 : }
-\medskip
+\begin{reponse}{1}
 
-Soit $v \in V$
-\medskip
-\[
-\int_{\Omega} f v
-= \int_{\Omega} - v \frac{\partial}{\partial x} (\eta \frac{\partial u}{\partial x})
-- v \frac{\partial}{\partial y} (\eta \frac{\partial v}{\partial y})
-+ \lambda u v
-= \int_{\Omega} \lambda u v + \int_{B} \int_{A}
-- v \frac{\partial}{\partial x} (\eta \frac{\partial u}{\partial x})
-+ \int_{A} \int_{B} - v \frac{\partial}{\partial y} (\eta \frac{\partial v}{\partial y})
-= \dots
-\]
+La réponse à la première question
 
+\end{reponse}
 
-\medskip
 
 
 \textit{Question 4 : }

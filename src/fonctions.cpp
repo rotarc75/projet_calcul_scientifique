@@ -7,6 +7,11 @@
 
 using namespace std;
 
+
+typedef vector<vector<double>> matrix;
+typedef tuple<vector<double>,vector<double>> duplix;
+
+
 // Fonction qui renvoie une subdivision uniforme de [-a,a]
 vector<double> Subdiv(double a, int N){
     vector<double> subdiv = vector<double>(N+1);
@@ -62,7 +67,7 @@ vector<Triangle> maillageTR(int N, int M){
 
 
 // Fonction qui renvoie les coordonnées des points du triangle
-tuple<vector<double>,vector<double>> CoordsTrig(double a, double b, int N,
+duplix CoordsTrig(double a, double b, int N,
     int M, Triangle T){
     vector<double> xs = vector<double>(3);
     vector<double> ys = vector<double>(3);
@@ -80,7 +85,7 @@ tuple<vector<double>,vector<double>> CoordsTrig(double a, double b, int N,
 
 // Fonction qui renvoie la jacobienne de F_T
 // Voir question 20, elle justifie ce calcul
-vector<vector<double>> CalcMatBT(vector<double> xs, vector<double> ys){
+matrix CalcMatBT(vector<double> xs, vector<double> ys){
     double bt_00 = xs[1] - xs[0];
     double bt_10 = ys[1] - ys[0];
     double bt_01 = xs[2] - xs[0];
@@ -99,7 +104,7 @@ vector<double> integ_eta_triang(double (* eta)(double,double),
     // Parcours du maillage
     for (Triangle T : maillage){
 
-        tuple<vector<double>,vector<double>> xs_ys = CoordsTrig(a,b,N,M,T);
+        duplix xs_ys = CoordsTrig(a,b,N,M,T);
         vector<double> xs = get<0>(xs_ys);
         vector<double> ys = get<1>(xs_ys);
 
@@ -125,34 +130,34 @@ vector<double> integ_eta_triang(double (* eta)(double,double),
     return ET;
 }
 
- vector<vector<double>> DiffTerm(tuple<vector<double>,vector<double>> xs_ys, double val){
+
+matrix DiffTerm(duplix xs_ys, double val){
     vector<double> xs = get<0>(xs_ys);
     vector<double> ys = get<1>(xs_ys);
 
-    vector<vector<double>> BT = CalcMatBT(xs,ys);
+    matrix BT = CalcMatBT(xs,ys);
     double det = (xs[1]-xs[0])*(ys[2]-ys[0]) - (ys[1]-ys[0])*(xs[2]-xs[0]);
 
     //Construction de la transposée de l'inverse de BT
-    vector<vector<double>> transp_inv_BT;
-    transp_inv_BT[0][0] = -1/det * BT[0][0];
-    transp_inv_BT[0][1] = 1/det * BT[0][1];
-    transp_inv_BT[1][0] = 1/det * BT[1][0];
-    transp_inv_BT[0][0] = -1/det * BT[1][1];
+    matrix trsp_inv_BT;
+    trsp_inv_BT[0][0] = -1/det * BT[0][0];
+    trsp_inv_BT[0][1] = 1/det * BT[0][1];
+    trsp_inv_BT[1][0] = 1/det * BT[1][0];
+    trsp_inv_BT[0][0] = -1/det * BT[1][1];
 
     //Calcul des Nabla_lambda^
-    vector<double> Nabla_lambdacha0 = {{-1,-1}}; //lambdacha0 = (1-x^-y^)
-    vector<double> Nabla_lambdacha1 = {{1,0}}; //lambdacha1 = x^
-    vector<double> Nabla_lambdacha2 = {{0,1}}; //lambdacha2 = y^
-
+    vector<double> NLcha0 = {{-1,-1}}; //lambdacha0 = (1-x^-y^)
+    vector<double> NLcha1 = {{1,0}}; //lambdacha1 = x^
+    vector<double> NLcha2 = {{0,1}}; //lambdacha2 = y^
     //Calcul des Nabla_lambda = BT*Nabla_lambdacha
-    double nl00 = transp_inv_BT[0][0] * Nabla_lambdacha0[0] + transp_inv_BT[0][1] * Nabla_lambdacha0[1];
-    double nl01 = transp_inv_BT[1][0] * Nabla_lambdacha0[0] + transp_inv_BT[1][1] * Nabla_lambdacha0[1];
+    double nl00 = trsp_inv_BT[0][0] * NLcha0[0] + trsp_inv_BT[0][1] * NLcha0[1];
+    double nl01 = trsp_inv_BT[1][0] * NLcha0[0] + trsp_inv_BT[1][1] * NLcha0[1];
 
-    double nl10 = transp_inv_BT[0][0] * Nabla_lambdacha1[0] + transp_inv_BT[0][1] * Nabla_lambdacha1[1];
-    double nl11 = transp_inv_BT[1][0] * Nabla_lambdacha1[0] + transp_inv_BT[1][1] * Nabla_lambdacha1[1];
+    double nl10 = trsp_inv_BT[0][0] * NLcha1[0] + trsp_inv_BT[0][1] * NLcha1[1];
+    double nl11 = trsp_inv_BT[1][0] * NLcha1[0] + trsp_inv_BT[1][1] * NLcha1[1];
 
-    double nl20 = transp_inv_BT[0][0] * Nabla_lambdacha2[0] + transp_inv_BT[0][1] * Nabla_lambdacha2[1];
-    double nl21 = transp_inv_BT[1][0] * Nabla_lambdacha2[0] + transp_inv_BT[1][1] * Nabla_lambdacha2[1];
+    double nl20 = trsp_inv_BT[0][0] * NLcha2[0] + trsp_inv_BT[0][1] * NLcha2[1];
+    double nl21 = trsp_inv_BT[1][0] * NLcha2[0] + trsp_inv_BT[1][1] * NLcha2[1];
 
     //Calcul des produits scalaires * ET
     double val00 = val * (nl00 * nl00 + nl01 * nl01);
@@ -166,9 +171,10 @@ vector<double> integ_eta_triang(double (* eta)(double,double),
         {val01, val11, val12},
         {val02, val12, val22}
     };
- }
+}
 
-vector<vector<double>> ReacTerm(tuple<vector<double>,vector<double>> xs_ys, double val){
+
+matrix ReacTerm(duplix xs_ys, double val){
     vector<double> xs = get<0>(xs_ys);
     vector<double> ys = get<1>(xs_ys);
 
@@ -185,3 +191,42 @@ vector<vector<double>> ReacTerm(tuple<vector<double>,vector<double>> xs_ys, doub
 
 
 
+
+vector<double> matvec(vector<double> V, vector<Triangle> maillage, int N, int M,
+    double a, double b, double (* eta)(double,double)){
+
+    int K = 2*N*M;
+    vector<double> W((N+1)*(M+1));
+
+    // Contient les valeurs de l'integrales de eta sur chaque T
+    vector<double> VALS = integ_eta_triang(eta,maillage, N,M,a,b);
+
+    for (int t = 0; t < K; t++){
+        Triangle T = maillage[t];
+
+        // Calcul de B_T
+        duplix xs_ys = CoordsTrig(a,b,N,M,T);
+        matrix BT = CalcMatBT(get<0>(xs_ys),get<1>(xs_ys));
+        matrix D = DiffTerm(xs_ys,VALS[t]);
+        matrix R = ReacTerm(xs_ys,VALS[t]);
+
+        for (int i = 0; i < 3; i++){
+            int k = T.get(i);
+
+            // Calcul de la contribution
+            double res = 0;
+
+            for (int r = 0; r < 3; r++){
+                int j = T.get(r);
+
+                // aT = Diff + Reac
+                double PROD2 = D[r][i]+R[r][i];
+                res += V[j] * PROD2;
+            }
+
+            W[k] += res;
+        }
+    }
+
+    return W;
+}

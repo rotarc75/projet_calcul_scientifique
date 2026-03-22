@@ -56,6 +56,12 @@ int main(){
         cout << "Test 1 : échoué !\n" ;
     }
 
+    if (test_numgb(18, 50, 11, 31,600)){
+        cout << "Test 2 : réussi !\n" ;
+    } else {
+        cout << "Test 2 : échoué !\n" ;
+    }
+
     cout << "\n\n\n";
     cout << "--------------Tests invnumgb--------------\n";
 
@@ -65,6 +71,19 @@ int main(){
     } else {
         cout << "Test 1 : échoué !\n" ;
     }
+
+    if (test_invnumgb(21, 3,45,{1,2})){
+        cout << "Test 2 : réussi !\n" ;
+    } else {
+        cout << "Test 2 : échoué !\n" ;
+    }
+
+    if (test_invnumgb(101, 101,3923,{47,38})){
+        cout << "Test 3 : réussi !\n" ;
+    } else {
+        cout << "Test 3 : échoué !\n" ;
+    }
+
 
 
 
