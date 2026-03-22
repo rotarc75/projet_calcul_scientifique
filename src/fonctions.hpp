@@ -9,6 +9,8 @@
 
 using namespace std;
 
+typedef vector<vector<double>> matrix;
+typedef tuple<vector<double>,vector<double>> duplix;
 
 vector<double> Subdiv(double a, int N);
 
@@ -24,9 +26,12 @@ vector<vector<double>> CalcMatBT(vector<double> xs, vector<double> ys);
 
 vector<double> integ_eta_triang(double (* eta)(double,double),vector<Triangle> maillage,int N, int M,double a,double b);
 
-vector<vector<double>> DiffTerm(tuple<vector<double>,vector<double>> xs_ys, double val);
+vector<vector<double>> DiffTerm(duplix xs_ys, double val);
 
 vector<vector<double>> ReacTerm(tuple<vector<double>,vector<double>> xs_ys, double val);
+
+vector<double> matvec(vector<double> V, vector<Triangle> maillage, int N, int M,
+    double a, double b, double (* eta)(double,double));
 
 #endif
 

@@ -1,15 +1,10 @@
-#include <tuple>
-#include <vector>
 #include <stdlib.h>
 
+#include "fonctions.hpp";
 #include "triangle.hpp"
 
 
-using namespace std;
 
-
-typedef vector<vector<double>> matrix;
-typedef tuple<vector<double>,vector<double>> duplix;
 
 
 // Fonction qui renvoie une subdivision uniforme de [-a,a]
