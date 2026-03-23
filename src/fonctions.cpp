@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-#include "fonctions.hpp";
+#include "fonctions.hpp"
 #include "triangle.hpp"
 
 

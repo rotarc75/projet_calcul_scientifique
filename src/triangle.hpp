@@ -10,6 +10,9 @@ public:
     Triangle(int n1, int n2, int n3);
     Triangle();
     int get(int k);
+
+    // Surcharge de ==
+    bool operator==(const Triangle& autre) const;
 };
 
 
