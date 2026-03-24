@@ -64,25 +64,198 @@ void test_maillageTR(int &k, int N, int M, vector<Triangle> sol_attendue){
 }
 
 
-// bool test_CoordsTrig(double a, double b, int N, int M, Triangle T,
-//     tuple<vector<double>,vector<double>> sol_attendue){
+void test_CoordsTrig(int &num_test, double a, double b, int N, int M, Triangle T,
+    tuple<vector<double>,vector<double>> sol_attendue){
 
-//     return CoordsTrig(a,b,N,M,T) == sol_attendue;
-// }
+    auto sol_obtenue = CoordsTrig(a,b,N,M,T);
+    int L = get<0>(sol_attendue).size();
+    auto xs_attendu = get<0>(sol_attendue);
+    auto ys_attendu = get<1>(sol_attendue);
+    auto xs_obtenu = get<0>(sol_obtenue);
+    auto ys_obtenu = get<1>(sol_obtenue);
+    bool correct_xs = true;
+    bool correct_ys = true;
+
+    for (int k = 0; k < L; k++){
+        if (correct_xs && xs_attendu[k] != xs_obtenu[k]) correct_xs = false;
+        if (correct_ys && ys_attendu[k] != ys_obtenu[k]) correct_ys = false;
+    }
+
+    if (correct_xs && correct_ys){
+        cout << VERT << "Test "<< num_test<<" : réussi !\n" << BLANC;
+    } else {
+        cout << ROUGE << "Test "<<num_test<<" : échoué !\n" << BLANC;
+        if (correct_ys){
+            cout << "Il y a un soucis avec au moins une composante en x.\n";
+        }
+        if (correct_xs){
+            cout << "Il y a un soucis avec au moins une composante en y.\n";
+        }
+    }
+
+    num_test++;
+}
 
 
-// bool test_CalcMatBT(vector<double> xs, vector<double> ys,
-//     vector<vector<double>> sol_attendue){
 
-//     return CalcMatBT(xs,ys) == sol_attendue;
-// }
 
-// bool test_integ_eta_triang(double (* eta)(double,double),
-//     vector<Triangle> maillage,int N, int M,double a,double b,
-//     vector<double> sol_attendue){
+void test_CalcMatBT(int &num_test, vector<double> xs, vector<double> ys,
+    vector<vector<double>> sol_attendue){
 
-//     return integ_eta_triang(eta,maillage,N,M,a,b) == sol_attendue;
-// }
+    auto sol_obtenue = CalcMatBT(xs,ys);
+    bool reussi = true;
+
+    for (int l = 0; l < 2; l++){
+        for (int c = 0; c < 2; c++){
+            if (sol_obtenue[l][c] != sol_attendue[l][c]){
+                reussi = false;
+                break;
+            }
+        }
+    }
+
+    if (reussi){
+        cout << VERT << "Test "<<num_test<<" : réussi !\n" << BLANC;
+    } else {
+        cout << ROUGE << "Test "<<num_test<<" : échoué !\n" << BLANC;
+        cout << "   Pas d'affichage de debug pour le moment.\n";
+    }
+
+    num_test++;
+}
+
+void test_integ_eta_triang(int &num_test, double (* eta)(double,double),
+    vector<Triangle> maillage,int N, int M,double a,double b,
+    vector<double> sol_attendue){
+
+    int K = 2*N*M;
+    bool reussi = true;
+    vector<double> sol_obtenue = integ_eta_triang(eta,maillage,N,M,a,b);
+    double epsilon = 0.0000001;
+
+    for (int k = 0; k < K; k++){
+        if (abs(sol_attendue[k] - sol_obtenue[k]) > epsilon){
+            reussi = false;
+
+            break;
+        }
+    }
+
+    if (reussi){
+        cout << VERT << "Test "<<num_test<<" : réussi !\n" << BLANC;
+    } else {
+        cout << ROUGE << "Test "<<num_test<<" : échoué !\n" << BLANC;
+        cout << "   Pas d'affichage de debug pour le moment.\n";
+    }
+
+    num_test++;
+}
+
+
+
+void test_DiffTerm(int &num_test,duplix xs_ys, double val, matrix sol_attendue){
+
+    matrix sol_obtenue = DiffTerm(xs_ys,val);
+    bool reussi = true;
+    double epsilon = 0.0000001;
+
+    for (int l = 0; l < 3; l++){
+        for (int c = 0; c < 3; c++){
+            if (abs(sol_obtenue[l][c] - sol_attendue[l][c]) > epsilon){
+                reussi = false;
+                break;
+            }
+        }
+    }
+
+    if (reussi){
+        cout << VERT << "Test "<<num_test<<" : réussi !\n" << BLANC;
+    } else {
+        cout << ROUGE << "Test "<<num_test<<" : échoué !\n" << BLANC;
+        cout << "   Pas d'affichage de debug pour le moment.\n";
+    }
+
+    num_test++;
+}
+
+vector<vector<double>> ReacTerm(tuple<vector<double>,vector<double>> xs_ys, double val);
+
+
+void test_ReacTerm(int &num_test,duplix xs_ys, matrix sol_attendue){
+
+    matrix sol_obtenue = ReacTerm(xs_ys);
+    bool reussi = true;
+    double epsilon = 0.0000001;
+
+    for (int l = 0; l < 3; l++){
+        for (int c = 0; c < 3; c++){
+            if (abs(sol_obtenue[l][c] - sol_attendue[l][c]) > epsilon){
+                reussi = false;
+                break;
+            }
+        }
+    }
+
+    if (reussi){
+        cout << VERT << "Test "<<num_test<<" : réussi !\n" << BLANC;
+    } else {
+        cout << ROUGE << "Test "<<num_test<<" : échoué !\n" << BLANC;
+        cout << "   Pas d'affichage de debug pour le moment.\n";
+    }
+
+    num_test++;
+}
+
+
+
+void test_matvec(int &num_test, vector<double> V, vector<Triangle> maillage,
+    int N, int M, double a, double b, double (* eta)(double,double),
+    vector<double> sol_attendue){
+
+
+    vector<double> sol_obtenue = matvec(V,maillage,N,M,a,b,eta);
+    bool reussi = true;
+    double epsilon = 0.0000001;
+    int G = (N+1)*(M+1);
+
+    for (int k = 0; k < G; k++){
+        if (abs(sol_attendue[k] - sol_obtenue[k]) > epsilon){
+            reussi = false;
+            break;
+        }
+    }
+
+    if (reussi){
+        cout << VERT << "Test "<<num_test<<" : réussi !\n" << BLANC;
+    } else {
+        cout << ROUGE << "Test "<<num_test<<" : échoué !\n" << BLANC;
+        cout << "   Pas d'affichage de debug pour le moment.\n";
+    }
+
+    num_test++;
+}
+
+
+
+double eta1(double x, double y) {
+    return 1.0;
+}
+
+double eta2(double x, double y) {
+    return x + 2.0 * y + 5.0;
+}
+
+double eta3(double x, double y) {
+    return x * x + y * y + 1.0;
+}
+
+//fonction qui affiche un vector de double
+void print_vector(vector<double> tab){
+    cout << "[" ;
+    int size = tab.size();
+    for (int k = 0; k < size -1; k++) cout << tab[k] << ", ";
+    cout << tab[size-1] << "]\n";
+}
 
 
 
@@ -265,20 +438,177 @@ int main(){
     cout << "--------------Tests CalcMatBT--------------\n";
 
 
+    // Test pour le triangle de référence
+    vector<double> xs1 = {0.0, 1.0, 0.0};
+    vector<double> ys1 = {0.0, 0.0, 1.0};
+    vector<vector<double>> BT_attendue1 = {
+        {1.0, 0.0},
+        {0.0, 1.0}
+    };
+    test_CalcMatBT(num_tests, xs1, ys1, BT_attendue1);
 
-    cout << "Aucun test n'a été écrit pour cette section pour le moment...\n";
+
+    // Test pour le triangle : A0(1,1), A1(4,2), A2(2,5)
+    vector<double> xs2 = {1.0, 4.0, 2.0};
+    vector<double> ys2 = {1.0, 2.0, 5.0};
+    vector<vector<double>> BT_attendue2 = {
+        {3.0, 1.0},
+        {1.0, 4.0}
+    };
+    test_CalcMatBT(num_tests, xs2, ys2, BT_attendue2);
 
 
-
+    // Test pour un triangle plat
+    vector<double> xs3 = {1.0, 2.0, 3.0};
+    vector<double> ys3 = {1.0, 2.0, 3.0};
+    vector<vector<double>> BT_attendue3 = {
+        {1.0, 2.0},
+        {1.0, 2.0}
+    };
+    test_CalcMatBT(num_tests, xs3, ys3, BT_attendue3);
 
 
 
     cout << "\n\n\n";
     cout << "--------------Tests integ_eta_triang--------------\n";
 
-    cout << "Aucun test n'a été écrit pour cette section pour le moment...\n";
+    // Test eta (x,y) = 1
+    int N1 = 2;
+    int M1 = 2;
+
+    auto maillage2x2 =   maillageTR(N1,M1);
+    vector<double> sol_attendue1(2*N1*M1, 0.5);
+
+    test_integ_eta_triang(num_tests, eta1, maillage2x2, N1, M1, 1.0, 1.0, sol_attendue1);
 
 
+    // Test eta(x,y) = x + 2y + 5
+
+    auto maillage1x1 =   maillageTR(1,1);
+    vector<double> sol_attendue2 = {32./3., 28./3.};
+    test_integ_eta_triang(num_tests, eta2, maillage1x1, 1, 1, 1.0, 1.0, sol_attendue2);
+
+
+    // Test eta(x,y) = x² + y² + 1
+
+    vector<double> sol_attendue3 = {10.0 / 3.0, 10.0 / 3.0};
+
+    test_integ_eta_triang(num_tests, eta3, maillage1x1, 1, 1, 1.0, 1.0, sol_attendue3);
+
+
+    cout << "\n\n\n";
+    cout << "--------------Tests DiffTerm--------------\n";
+
+    // Test triangle de référence
+    vector<double> xs4 = {0.0, 1.0, 0.0};
+    vector<double> ys4 = {0.0, 0.0, 1.0};
+    duplix T1 = {xs4, ys4};
+    double val1 = 0.5;
+
+    vector<vector<double>> matrice_attendue1 = {
+        { 1.0, -0.5, -0.5},
+        {-0.5,  0.5,  0.0},
+        {-0.5,  0.0,  0.5}
+    };
+
+    test_DiffTerm(num_tests, T1, val1, matrice_attendue1);
+
+
+    // Test 2
+    vector<double> xs5 = {0.0, 2.0, 1.0};
+    vector<double> ys5 = {0.0, 0.0, 1.0};
+    duplix T2 = {xs5, ys5};
+    double val2 = 1.0;
+
+    vector<vector<double>> matrice_attendue2 = {
+        { 0.5,  0.0, -0.5},
+        { 0.0,  0.5, -0.5},
+        {-0.5, -0.5,  1.0}
+    };
+
+    test_DiffTerm(num_tests, T2, val2, matrice_attendue2);
+
+    // Test
+    vector<double> xs6 = {1.0, 3.0, 1.0};
+    vector<double> ys6 = {1.0, 1.0, 4.0};
+    duplix T3 = make_tuple(xs6, ys6);
+    double val3 = 3.0;
+
+    vector<vector<double>> matrice_attendue3 = {
+        { 13.0/12.0, -0.75, -1.0/3.0 },
+        { -0.75,      0.75,  0.0 },
+        { -1.0/3.0,   0.0,   1.0/3.0 }
+    };
+
+    test_DiffTerm(num_tests, T3, val3, matrice_attendue3);
+
+
+
+    cout << "\n\n\n";
+    cout << "--------------Tests ReacTerm--------------\n";
+
+
+    // Test Le triangle de référence (Aire = 0.5)
+    vector<double> xs_r1 = {0.0, 1.0, 0.0};
+    vector<double> ys_r1 = {0.0, 0.0, 1.0};
+    duplix T_r1 = {xs_r1, ys_r1};
+
+    vector<vector<double>> matrice_reac1 = {
+        { 1.0/12.0, 1.0/24.0, 1.0/24.0 },
+        { 1.0/24.0, 1.0/12.0, 1.0/24.0 },
+        { 1.0/24.0, 1.0/24.0, 1.0/12.0 }
+    };
+    test_ReacTerm(num_tests, T_r1, matrice_reac1);
+
+    // Test 2
+    vector<double> xs_r2 = {1.0, 3.0, 1.0};
+    vector<double> ys_r2 = {1.0, 1.0, 4.0};
+    duplix T_r2 = {xs_r2, ys_r2};
+
+    vector<vector<double>> matrice_reac2 = {
+        { 0.50, 0.25, 0.25 },
+        { 0.25, 0.50, 0.25 },
+        { 0.25, 0.25, 0.50 }
+    };
+    test_ReacTerm(num_tests, T_r2, matrice_reac2);
+
+
+    // Test
+    vector<double> xs_r3 = {-100.0, 500.0, 0.0};
+    vector<double> ys_r3 = {-50.0, -50.0, 1000.0};
+    duplix T_r3 = {xs_r3, ys_r3};
+
+    vector<vector<double>> matrice_reac3 = {
+        { 52500.0, 26250.0, 26250.0 },
+        { 26250.0, 52500.0, 26250.0 },
+        { 26250.0, 26250.0, 52500.0 }
+    };
+
+    test_ReacTerm(num_tests, T_r3, matrice_reac3);
+
+
+    cout << "\n\n\n";
+    cout << "--------------Tests matvec--------------\n";
+
+    // Test 1 : Le vecteur nul
+    vector<double> V = {0.0, 0.0, 0.0, 0.0};
+    vector<double> sol_attendue70 = {0.0, 0.0, 0.0, 0.0};
+    vector<double> W_nul_obtenu = matvec(V, maillage1x1, 1, 1, 1.0, 1.0, eta1);
+
+    test_matvec(num_tests, V,maillage1x1, 1,1,1.0,1.0,eta1,sol_attendue70);
+
+
+    // Test 2
+    vector<double> V_un = {1.0, 1.0, 1.0, 1.0};
+    vector<double> sol_attendue71 = {4.0 / 3.0, 2.0 / 3.0, 2.0 / 3.0, 4.0 / 3.0};
+
+    test_matvec(num_tests, V_un, maillage1x1, 1, 1, 1.0, 1.0, eta1, sol_attendue71);
+
+    // Test
+    vector<double> V_col0 = {1.0, 0.0, 0.0, 0.0};
+    vector<double> sol_attendue72 = {5.0 / 3.0, -1.0 / 3.0, -1.0 / 3.0, 1.0 / 3.0};
+
+    test_matvec(num_tests, V_col0, maillage1x1, 1, 1, 1.0, 1.0, eta1, sol_attendue72);
 }
 
 
