@@ -52,3 +52,6 @@ double max_abs(vector<double> V);
 
 vector<double> bicg_stab(vector<double> B,maillage TRG, int N, int M, double a,
     double b, double tol,int max_it, double (* eta) (double,double));
+
+
+vector<double> erreurs(double (* solExa) (double,double),vector<double> uh,maillage TRG, int N, int M, double a, double b);

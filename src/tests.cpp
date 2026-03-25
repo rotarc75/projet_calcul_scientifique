@@ -278,7 +278,44 @@ void test_cl_vec(int &num_test,double lbd, vector<double> u, double mu,
 }
 
 
+void test_max_abs(int &num_test, vector<double> V, double sol_attendue){
 
+    if (max_abs(V) == sol_attendue){
+        cout << VERT << "Test "<<num_test<<" : réussi !\n" << BLANC;
+    } else {
+        cout << ROUGE << "Test "<<num_test<<" : échoué !\n" << BLANC;
+        cout << "   Pas d'affichage de debug pour le moment.\n";
+    }
+
+    num_test++;
+}
+
+
+
+void test_scdmembre(int &num_test, double rhsf(double,double), int N, int M, maillage TRG, double a, double b, vector<double> sol_attendue){
+
+
+    vector<double> sol_obtenue = scdmembre(rhsf,N,M,TRG,a,b);
+    bool reussi = true;
+    int K = sol_attendue.size();
+    double epsilon = 1e-9;
+
+    for (int k = 0; k < K; k++){
+        if (abs(sol_attendue[k] - sol_obtenue[k]) > epsilon){
+            reussi = false;
+            break;
+        }
+    }
+
+    if (reussi){
+        cout << VERT << "Test "<<num_test<<" : réussi !\n" << BLANC;
+    } else {
+        cout << ROUGE << "Test "<<num_test<<" : échoué !\n" << BLANC;
+        cout << "   Pas d'affichage de debug pour le moment.\n";
+    }
+
+    num_test++;
+}
 
 
 double eta1(double x, double y) {
@@ -704,6 +741,49 @@ int main(){
     vector<double> v13 = {4.0, -8.0};
     vector<double> sol13 = {1.5, -0.5};
     test_cl_vec(num_tests, 0.5, u13, 0.25, v13, sol13);
+
+
+
+
+    cout << "\n\n\n";
+    cout << "--------------Tests max_abs--------------\n";
+
+    vector<double> V1 = {1.5, -2.0, 3.5, -1.0};
+    test_max_abs(num_tests, V1, 3.5);
+
+    vector<double> V2 = {4.0, -7.2, 3.1, 5.0};
+    test_max_abs(num_tests, V2, 7.2);
+
+
+    vector<double> V3 = {0.0, 0.0, 0.0};
+    test_max_abs(num_tests, V3, 0.0);
+
+
+
+    cout << "\n\n\n";
+    cout << "--------------Tests scdmembre--------------\n";
+
+
+
+    int G = 11*15;
+    vector<double> sol_zero(G, 0.0);
+    auto f0 = [](double,double){return 0.;};
+    test_scdmembre(num_tests, f0 , 10, 14, maillage2x2, 1., 1., sol_zero);
+
+
+
+    auto f1 = [](double,double){return 1.;};
+
+
+    double aire_T = (1.0 * 1.0) / 2.0;
+    vector<double> sol_un(4, 0.0);
+    sol_un[0] = 2.0 * (aire_T / 3.0);
+    sol_un[1] = 1.0 * (aire_T / 3.0);
+    sol_un[2] = 1.0 * (aire_T / 3.0);
+    sol_un[3] = 2.0 * (aire_T / 3.0);
+
+    // N = 1, M = 1
+    test_scdmembre(num_tests, f1, 1, 1, maillage1x1, 1.0, 1.0, sol_un);
 }
 
 

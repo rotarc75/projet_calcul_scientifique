@@ -426,8 +426,37 @@ vector<double> bicg_stab(vector<double> B,maillage TRG, int N, int M, double a,
     return X;
 }
 
+
 // double norme_L2 = normL2(X, TRG, N, M, a, b);
 // double norme_L2_Grad = normL2Grad(X, TRG, N, M, a, b);
 // ElementVh solution(X, X, norme_L2, norme_L2_Grad);
-
 // return solution;
+
+vector<double> erreurs(double (* solExa) (double,double),vector<double> uh,
+    maillage TRG, int N, int M, double a, double b){
+
+    vector<double> tab_err(3);
+    int G = (N+1)*(M+1);
+
+    vector<double> uchap(G);
+
+    for (int s = 0; s < G; s++){
+        tuple<int,int> coord_noeud = invnumgb(N,M,s);
+        double x = -a + (2*a)/N * get<0>(coord_noeud);
+        double y = -b + (2*b)/M * get<1>(coord_noeud);
+
+        uchap[s] = solExa(x,y);
+    }
+
+
+    vector<double> diff = cl_vec(1.,uchap,-1.,uh);
+
+    tab_err[0] = normL2(diff,TRG,N,M,a,b) / normL2(uchap,TRG,N,M,a,b);
+    tab_err[1] = normL2Grad(diff,TRG,N,M,a,b) / normL2Grad(uchap,TRG,N,M,a,b);
+    tab_err[2] = max_abs(diff) / max_abs(uchap);
+
+    return tab_err;
+}
+
+
+
