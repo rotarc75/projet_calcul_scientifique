@@ -14,7 +14,8 @@
 \tcbuselibrary{skins, breakable, theorems}
 \RequirePackage{titlesec}
 
-
+% Jolis dessins
+\usepackage{tikz}
 
 \renewcommand{\thechapter}{\Roman{chapter}}
 \renewcommand{\thesection}{\arabic{section}}
@@ -101,10 +102,9 @@
 % Bloc réponse
 \newtcolorbox{reponse}[1]{
     enhanced,
-    breakable,
     empty, % Fond et cadre transparents
+    breakable,
     left=8pt, % Léger retrait du texte pour respirer
-    borderline west={1.5pt}{0pt}{accentcolor!50}, % Ligne verticale bordeaux adoucie à 50%
     title={Question #1},
     coltitle=accentcolor,
     fonttitle=\large\bfseries,

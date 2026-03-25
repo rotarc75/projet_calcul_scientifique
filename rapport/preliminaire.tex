@@ -1,24 +1,126 @@
-
-
 \section{Préliminaires}
 
-
-
-\medskip
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{reponse}{1}
 
-La réponse à la première question
+Soit $v \in V$. En multipliant l'équation (1) par $v$ et en intégrant sur $\Omega$, on obtient :
+
+\begin{align*}
+    \int_{\Omega} & f v \, dxdy = \int_{\Omega} \left( -v \frac{\partial}{\partial x} \left( \eta \frac{\partial u}{\partial x} \right) - v \frac{\partial}{\partial y} \left( \eta \frac{\partial u}{\partial y} \right) + \lambda u v \right) dxdy \\ \\
+    & = \int_{\Omega} \lambda u v \, dxdy + \int_{-b}^{b} \int_{-a}^{a} -v \frac{\partial}{\partial x} \left( \eta \frac{\partial u}{\partial x} \right) dx dy + \int_{-a}^{a} \int_{-b}^{b} -v \frac{\partial}{\partial y} \left( \eta \frac{\partial u}{\partial y} \right) dy dx.
+\end{align*}
+
+En appliquant une intégration par parties sur les termes avec les dérivées partielles :
+
+\begin{align*}
+    \int_{\Omega} f v \, dxdy &= \int_{\Omega} \lambda u v \, dxdy \\ \\
+    &\quad + \int_{-b}^{b} \left( \left[ -v \eta \frac{\partial u}{\partial x} \right]_{-a}^{a} + \int_{-a}^{a} \frac{\partial v}{\partial x} \eta \frac{\partial u}{\partial x} \, dx \right) dy \\ \\
+    &\quad + \int_{-a}^{a} \left( \left[ -v \eta \frac{\partial u}{\partial y} \right]_{-b}^{b} + \int_{-b}^{b} \frac{\partial v}{\partial y} \eta \frac{\partial u}{\partial y} \, dy \right) dx
+\end{align*}
+
+D'après les conditions aux limites, les dérivées normales s'annulent au bord, donc :
+
+\[
+    \left[ -v \eta \frac{\partial u}{\partial x} \right]_{-a}^{a} = 0 \quad \text{et} \quad \left[ -v \eta \frac{\partial u}{\partial y} \right]_{-b}^{b} = 0.
+\]
+
+Finalement, nous avons l'égalité suivante :
+
+\begin{align*}
+    \int_{\Omega} f v \, dxdy &= \int_{\Omega} \lambda u v \, dxdy + \int_{\Omega} \eta \frac{\partial v}{\partial x} \frac{\partial u}{\partial x} \, dxdy + \int_{\Omega} \eta \frac{\partial v}{\partial y} \frac{\partial u}{\partial y} \, dxdy \\
+    &= \int_{\Omega} \left( \eta \, \langle \,\nabla v \, \vert \,  \nabla u \, \rangle + \lambda u v \right) \, dxdy.
+\end{align*}
 
 \end{reponse}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\begin{reponse}{2}
 
-\textit{Question 4 : }
-\medskip
+Soit $w \in V$ vérifiant :
 
-\begin{theoreme}{Changement de variable}{}
+\[
+    \int_{\Omega} f v \, dxdy =\int_{\Omega} \left( \eta \nabla v \cdot \nabla u + \lambda u v \right) \, dxdy.
+\]
+
+Comme $u$ vérifie la même équation, on a :
+
+\[
+    \int_{\Omega} \eta \, \langle \, \nabla w - \nabla u \, \vert \, \nabla v \, \rangle \, + \lambda v(w-u) \, dxdy = 0.
+\]
+
+\newpage
+
+Ceci étant vrai pour tout $v \in V$, en particulier, c'est vrai pour $v = w - u \in  V$. On obtient alors :
+
+\begin{align*}
+    \int_{\Omega} \eta & \, \langle \, \nabla w - \nabla u \, \vert \, \nabla w - \nabla u \, \rangle \, + \lambda (w-u)^2 \, dxdy = 0 \\ \\
+    & \Longleftrightarrow  \quad \int_{\Omega} \eta \, \vert \vert \, \nabla w - \nabla u \, \vert \vert^2 + \lambda (w-u)^2 \, dxdy = 0.
+\end{align*}
+
+Or $\eta \,\vert \vert \, \nabla w - \nabla u \, \vert \vert^2 + \lambda (w-u)^2 \geq 0$ car $\eta \geq \eta_0 > 0$ et $\lambda >0$. On en déduit donc que 
+
+\[
+    \int_{\Omega} \eta \, \vert \vert \, \nabla w - \nabla u \, \vert \vert^2 + \lambda (w-u)^2 \, dxdy = 0 \quad \Longleftrightarrow \quad w=u.
+\]
+
+\end{reponse}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+
+\begin{reponse}{3}
+
+En supposant $\eta = 1$, $\lambda = 1$, on a :
+
+\begin{align*}
+    -\frac{\partial}{\partial x} & \left( \eta \frac{\partial u}{\partial x}\right) -\frac{\partial}{\partial y} \left( \eta \frac{\partial u}{\partial y}\right) + \lambda u = f(x,y) \\ \\
+    & \Longleftrightarrow \quad -\frac{\partial^2u}{\partial x^2}-\frac{\partial^2u}{\partial y^2} + u = f(x,y) \\ \\
+    & \Longleftrightarrow \quad  -\frac{\partial^2u}{\partial x^2}-\frac{\partial^2u}{\partial y^2} + u = \cos (m \pi x) \cos (m \pi y).
+\end{align*}
+
+Posons $u(x,y) = C \cos (m \pi x) \cos (m \pi y) \quad \forall\, (x,y) \in \overline{\Omega}$. Alors
+
+\begin{align*}
+    & \frac{\partial u}{\partial x}(x,y)=-C \sin (m \pi x) \cos (m \pi y) \\ 
+    \text{et } \\
+    & \frac{\partial u}{\partial y}(x,y)=-C \cos (m \pi x) \sin (m \pi y).
+\end{align*}
+
+On remarque que $u$ remplit bien les conditions aux bords si $a=b=1$ :
+
+\[ 
+    \frac{\partial u}{\partial x} (\pm 1, y) = \frac{\partial u}{\partial y} (x, \pm 1) = 0.
+\]
+
+Il ne nous reste donc plus qu'à déterminer $C$. On a :
+
+\[
+    \frac{\partial ^2u}{\partial x^2} (x,y)= \frac{\partial ^2u}{\partial y^2}(x,y) = -Cm^2\pi^2 \cos (m \pi x) \cos (m \pi y).
+\]
+
+Ainsi,
+
+\begin{align*}
+     -\frac{\partial ^2u}{\partial x^2} & (x,y) - \frac{\partial ^2u}{\partial y^2}(x,y) + u(x,y) = \cos (m \pi x) \cos (m \pi y) \\ \\
+    & \Longleftrightarrow \quad C(m^2\pi^2+m^2\pi^2+1) \cos (m \pi x) \cos (m \pi y) = \cos (m \pi x) \cos (m \pi y) \\ \\
+    & \Longleftrightarrow \quad C = \frac{1}{2m^2\pi^2 +1}.
+\end{align*}
+
+Par suite, on a
+
+\[
+    u^p(x,y) = \frac{\cos (m \pi x) \cos (m \pi y)}{2m^2\pi^2 +1}
+\]
+
+\end{reponse}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{reponse}{4}
+
+\begin{theoreme*}{Changement de variable}{}
 
 Soit $n \in \N$, $\mathcal C$ et $\mathcal D$ deux ouverts de $\R^n$ et
 $\phi : \mathcal C \to \mathcal D$ un $C^1$-difféomorphisme.
@@ -29,4 +131,6 @@ Si $f : \mathcal D \to \R$ est borélienne positive ou intégrable, alors
 \int_{\mathcal C} (f \circ \phi)\, \left|\det D\phi\right| \, d\lambda^n
 \]
 
-\end{theoreme}
+\end{theoreme*}
+
+\end{reponse}
