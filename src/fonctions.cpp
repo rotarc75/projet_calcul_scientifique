@@ -2,9 +2,6 @@
 #include <cmath>
 
 #include "fonctions.hpp"
-#include "triangle.hpp"
-
-
 
 
 
@@ -357,5 +354,80 @@ double normL2Grad(vector<double> V, maillage TRG, int N, int M, double a,
     return sqrt(norme_carre);
 }
 
+// Fonction qui calcule le produit scalaire de deux vecteurs
+double pdt_sc(vector<double> u, vector<double> v){
+    double prod = 0;
+    int N = u.size();
+
+    for (int k = 0; k < N; k++){
+        prod += u[k]*v[k];
+    }
+
+    return prod;
+}
+
+// Fonction qui renvoie la combinaison linéaire de deux vecteurs
+vector<double> cl_vec(double lbd, vector<double> u, double mu, vector<double> v){
+    int L = u.size();
+    vector<double> cl(L);
+
+    for (int k = 0; k < L; k++){
+        cl[k] = lbd*u[k] + mu*v[k];
+    }
+
+    return cl;
+}
 
 
+// Fonction qui renvoie la composante max en valeur absolue d'un vecteur
+double max_abs(vector<double> V){
+    double max = V[0];
+
+    for (double x : V)
+        if (abs(x) > max) max = abs(x);
+
+    return max;
+}
+
+vector<double> bicg_stab(vector<double> B,maillage TRG, int N, int M, double a,
+    double b, double tol,int max_it, double (* eta) (double,double)){
+
+    vector<double> AW,AS,S,R_tmp;
+    vector<double> X((N+1)*(M+1),0);
+
+    // on choisit X0=0 (ca nous évite un prod mat vec)
+    vector<double> R = B;
+    vector<double> R_etoile = R;
+
+
+    vector<double> W = R;
+    int it = 0;
+
+    // Itérations, bicg_stab selon l'algorithme donné
+    while (max_abs(R) > tol && it < max_it){
+        AW = matvec(W,TRG,N,M,a,b,eta);
+        double alpha = pdt_sc(R,R_etoile) / pdt_sc(AW,R_etoile);
+
+        S = cl_vec(1.,R,-alpha,AW);
+
+        AS = matvec(S,TRG,N,M,a,b,eta);
+        double omega = pdt_sc(AS,S)/pdt_sc(AS,AS);
+
+        // Actualisation des variables pour le prochain tour de boucle
+        X = cl_vec(1.,X,1.,cl_vec(alpha,W,omega,S));
+        R_tmp = R;
+        R = cl_vec(1.,S,-omega,AS);
+
+        double beta = (pdt_sc(R,R_etoile) * alpha) / (pdt_sc(R_tmp,R_etoile) * omega);
+        W = cl_vec(1.,R,beta,cl_vec(1.,W,-omega,AW));
+        it++;
+    }
+
+    return X;
+}
+
+// double norme_L2 = normL2(X, TRG, N, M, a, b);
+// double norme_L2_Grad = normL2Grad(X, TRG, N, M, a, b);
+// ElementVh solution(X, X, norme_L2, norme_L2_Grad);
+
+// return solution;

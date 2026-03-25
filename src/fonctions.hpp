@@ -5,7 +5,6 @@
 #include <vector>
 
 
-#include "fonctions.hpp"
 #include "triangle.hpp"
 
 using namespace std;
@@ -38,4 +37,18 @@ vector<double> matvec(vector<double> V, maillage TRG, int N, int M,
 
 #endif
 
+vector<double> scdmembre(double rhsf(double,double), int N, int M, maillage TRG, double a, double b);
 
+double normL2(vector<double> V,maillage TRG, int N, int M, double a, double b);
+
+
+double normL2Grad(vector<double> V, maillage TRG, int N, int M, double a, double b);
+
+double pdt_sc(vector<double> u, vector<double> v);
+
+vector<double> cl_vec(double lbd, vector<double> u, double mu, vector<double> v);
+
+double max_abs(vector<double> V);
+
+vector<double> bicg_stab(vector<double> B,maillage TRG, int N, int M, double a,
+    double b, double tol,int max_it, double (* eta) (double,double));
