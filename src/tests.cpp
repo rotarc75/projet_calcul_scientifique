@@ -131,7 +131,7 @@ void test_integ_eta_triang(int &num_test, double (* eta)(double,double),
     int K = 2*N*M;
     bool reussi = true;
     vector<double> sol_obtenue = integ_eta_triang(eta,maillage,N,M,a,b);
-    double epsilon = 0.0000001;
+    double epsilon = 1e-9;
 
     for (int k = 0; k < K; k++){
         if (abs(sol_attendue[k] - sol_obtenue[k]) > epsilon){
@@ -234,6 +234,50 @@ void test_matvec(int &num_test, vector<double> V, vector<Triangle> maillage,
 
     num_test++;
 }
+
+void test_pdt_sc(int &num_test, vector<double> u, vector<double> v,
+        double sol_attendue){
+
+    if (pdt_sc(u,v) == sol_attendue){
+        cout << VERT << "Test "<<num_test<<" : réussi !\n" << BLANC;
+    } else {
+        cout << ROUGE << "Test "<<num_test<<" : échoué !\n" << BLANC;
+        cout << "   Pas d'affichage de debug pour le moment.\n";
+    }
+    num_test++;
+}
+
+
+
+
+
+
+void test_cl_vec(int &num_test,double lbd, vector<double> u, double mu,
+    vector<double> v, vector<double> sol_attendue){
+
+    vector<double> sol_obtenue = cl_vec(lbd,u,mu,v);
+    bool reussi = true;
+    int K = sol_attendue.size();
+    double epsilon = 1e-9;
+
+    for (int k = 0; k < K; k++){
+        if (abs(sol_attendue[k] - sol_obtenue[k]) > epsilon){
+            reussi = false;
+            break;
+        }
+    }
+
+    if (reussi){
+        cout << VERT << "Test "<<num_test<<" : réussi !\n" << BLANC;
+    } else {
+        cout << ROUGE << "Test "<<num_test<<" : échoué !\n" << BLANC;
+        cout << "   Pas d'affichage de debug pour le moment.\n";
+    }
+
+    num_test++;
+}
+
+
 
 
 
@@ -609,6 +653,57 @@ int main(){
     vector<double> sol_attendue72 = {5.0 / 3.0, -1.0 / 3.0, -1.0 / 3.0, 1.0 / 3.0};
 
     test_matvec(num_tests, V_col0, maillage1x1, 1, 1, 1.0, 1.0, eta1, sol_attendue72);
+
+
+    cout << "\n\n\n";
+    cout << "--------------Tests pdt_sc--------------\n";
+
+    vector<double> u1 = {1.0, 2.0, 3.0};
+    vector<double> v1 = {4.0, -5.0, 6.0};
+    test_pdt_sc(num_tests, u1, v1, 12.0);
+
+
+
+    vector<double> u2 = {1.0, 0.0, -1.0};
+    vector<double> v2 = {0.0, 1.0, 0.0};
+    test_pdt_sc(num_tests, u2, v2, 0.0);
+
+    vector<double> u3 = {0.0, 0.0, 0.0};
+    vector<double> v3 = {7.5, -3.14, 42.0};
+    test_pdt_sc(num_tests, u3, v3, 0.0);
+
+
+    vector<double> u4 = {0.5, 0.25, 1.5};
+    vector<double> v4 = {2.0, 4.0, -2.0};
+    test_pdt_sc(num_tests, u4, v4, -1.0);
+
+
+    cout << "\n\n\n";
+    cout << "--------------Tests cl_vec--------------\n";
+
+    vector<double> u10 = {1.0, 2.0, 3.0};
+    vector<double> v10 = {4.0, 5.0, 6.0};
+    vector<double> sol10 = {14.0, 19.0, 24.0};
+    test_cl_vec(num_tests, 2.0, u10, 3.0, v10, sol10);
+
+
+    vector<double> u11 = {1.5, -2.5};
+    vector<double> v11 = {1.5, -2.5};
+    vector<double> sol11 = {0.0, 0.0};
+    test_cl_vec(num_tests, 1.0, u11, -1.0, v11, sol11);
+
+
+    vector<double> u12 = {10.0, 20.0};
+    vector<double> v12 = {30.0, 40.0};
+    vector<double> sol12 = {0.0, 0.0};
+    test_cl_vec(num_tests, 0.0, u12, 0.0, v12, sol12);
+
+
+
+    vector<double> u13 = {1.0, 3.0};
+    vector<double> v13 = {4.0, -8.0};
+    vector<double> sol13 = {1.5, -0.5};
+    test_cl_vec(num_tests, 0.5, u13, 0.25, v13, sol13);
 }
 
 
