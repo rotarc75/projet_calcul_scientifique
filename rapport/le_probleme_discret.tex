@@ -1,0 +1,128 @@
+\begin{remark*}
+    
+    Les fonctions des questions 28(i), 28(j), 29(l) et 29(m) sont incluses dans le code fourni en annexe.
+    
+\end{remark*}
+
+\begin{reponse}{28 (suite)}
+
+    \textbf{(d)} On note $I_h$ l'application de $V_h$ dans $\mathbb{R}^G$ définie par
+    
+    \[
+        \forall \, v \in V_h, \quad I_h(v)=(v(M_k))_{0 \leq k \leq G-1}.
+    \]
+
+    Soit $v \in \ker I_h$. On a pour tout $0 \leq k \leq G-1$, $v(M_k)=0$. Soit $l \in [\![ \, 0, k-1 \, ]\!]$ et soit $T_l$ un triangle du maillage, de sommets $A_0, A_1$ et $A_2$. \\ \\
+    $v_{\vert T_l}$ est affine et d'après la question 17, une application affine est entièrement déterminée par ses valeurs aux trois sommets. \\ \\
+    Or $A_0, A_1, A_2$ sont des noeuds. Donc $v(A_i)=0$ pour tous $i \in \{ \, 0,1,2 \, \}$ et ainsi, $v_{\vert T_l}=0$. Ceci étant vrai pour tout triangle, $v=0$ sur $\overline{\Omega}$, et on en déduit que $I_h$ est injective. \\ \\
+    Montrons maintenant que $I_h$ est surjetive. Soit $(y_0, y_1, \dots, y_{G-1}) \in \mathbb{R}^G$. On a :
+
+    \[
+        v_{\vert T_l}(x,y) = \sum_{j=0}^2 y_{l_j}\lambda_j^{T_l}(x,y), \quad \text{où les $y_{l_j}$ sont les images par $v$ des $y_l$ aux noeuds.}
+    \]
+
+    On veut vérifier que $v$ est continue sur $\overline{\Omega}$. $v$ étant affine sur chaque triangle, on veut vérifier sa continuité sur les arrêtes des triangles. \\ \\
+    Soient $T_1, T_2$ deux triangles qui ont une arrête $A = [ \, A_0, A_1 \,]$ commune. Alors $\left(v_{\vert T_i}\right)_{\vert A}$ est affine en une variable (puisque l'on est sur un segment). De plus, $\left(v_{\vert T_1}\right)_{\vert A}(A_i) = \left(v_{\vert T_2}\right)_{\vert A}(A_i)$, donc $v_{\vert T_1} = v_{\vert T_2}$. Par suite, $v$ est continue sur $\overline{\Omega}$ et donc $v$ est bien un élément de $V_h$. \\ \\
+    Comme $I_h$ est un isomorphisme, alors $\dim \mathbb{R}^G = \dim V_h = G$.
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \vspace{0.8em}
+    \textbf{(e)} $w_k$ est l'image réciproque de $e_k$ par $I_h$ où $e_k$ est le $k$-ième vecteur de la base canonique de $\mathbb{R}^G$. Comme d'après la question précédente, $I_h$ est un isomorphisme, et que l'image réciproque d'une base par un isomorphisme est une base, alors les $w_k$ forment une base de $V_h$.
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \vspace{0.8em}
+    \textbf{(f)} \begin{enumerate}
+        \item Supposons que $M_k$ n'est pas un sommet de $T$. Soient $M_1, M_2, M_3$ les trois sommets de $T$. Ainsi, $k \notin \{\, 1,2,3\, \}$. Par définition, on a $w_k(M_l) = \delta_{k,l}$. Mais $M_k$ n'appartenant pas au triangle, $w_k$ s'annule aux trois sommets. Comme de plus $(w_k)_{\vert T}$ est affine, on déduit de la question 17 qu'elle est identiquement nulle. Par suite, $(w_k)_{\vert T} = 0$.
+        \item Supposons maintenant que $M_k \in T$. Soient $A_0, A_1, A_2$ les sommets de $T$ et $\lambda_0, \lambda_1, \lambda_2$ les coordonnées barycentriques associées. Alors il existe $i \in \{\,0,1,2\,\}$ tel que $M_k=A_i$. Comme $(w_k)_{\vert T}$ est affine, que $(w_k)_{\vert T}(A_i) = 1$ et que $(w_k)_{\vert T}(A_m) = 0$ pour $m \neq i$, alors $(w_k)_{\vert T}$ est exactement $(w_k)_{\vert T} = \lambda_i$.
+        \item D'après la question précédente, on a que $(w_k)_{\vert T}$ et $(w_j)_{\vert T}$ sont des coordonnées barycentriques. Comme de plus $F_T^{-1}(M_k)=\hat{A_l}$ et $F_T^{-1}(M_j)=\hat{A_s}$, alors on a $(w_k)_{\vert T} = \lambda_l $ et $(w_j)_{\vert T} =\lambda_s$. Ainsi, d'après la question 25, on a :
+
+        \[
+            \nabla w_k = (B_T^{-1})^T \, \nabla \hat{\lambda_l} \quad \text{et} \quad \nabla w_j = (B_T^{-1})^T \, \nabla \hat{\lambda_s}.
+        \]
+
+        Par suite,
+
+        \[
+            \nabla w_k \cdot \nabla w_j = \left((B_T^{-1})^T \, \nabla \hat{\lambda_l} \right)^T \left( (B_T^{-1})^T \, \nabla \hat{\lambda_s} \right).
+        \]
+
+        En développant, on obtient :
+
+        \[
+            \nabla w_k \cdot \nabla w_j = \left(\nabla \hat{\lambda_l} \right)^TB_T^{-1}(B_T^{-1})^T\nabla \hat{\lambda_s}.
+        \]
+        
+    \end{enumerate}
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \vspace{0.8em}
+    \textbf{(g)} Soit $u^h \in V_h$. D'après la question 28(e), les $w_k$ forment une base de $V_h$. On peut donc écrire $u^h$ sous la forme :
+
+    \[
+        u^h= \sum_{j=0}^{G-1} u_jw_j, \quad u_j \in \mathbb{R}.
+    \]
+
+    On en déduit par bilinéarité de $a$ que 
+
+    \begin{align*}
+        a\left(u^h,v_h\right) & = a\left(\sum_{j=0}^{G-1} u_jw_j,v_h\right) & \\ \\
+        &= \sum_{j=0}^{G-1} u_j a(w_j,v_h), & \forall \, v_h \in V_h.
+    \end{align*}
+
+    Comme $a$ est linéaire, il suffit de vérifier pour tous les vecteurs de la base. Ainsi, en posant $l(w_k) = b_k$ et en utilisant le fait que $a(w_j,w_k)=a_{k,j}$,
+
+    \[
+        \sum_{j=0}^{G-1} u_j a(w_j,w_k) = l(w_k)
+    \]
+
+    devient 
+
+    \[
+        \sum_{j=0}^{G-1} u_j a_{k,j} = b_k,
+    \]
+
+    ce qui correspond exactement à la $k$-ième ligne du système $AU=B$ où $U$ est le vecteur colonne contenant les $u_j$.
+    
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \vspace{0.8em}
+    \textbf{(h)} Soit $V = (v_0,\dots, v_{G-1}) \in \mathbb{R}^G$. On pose $v = \sum\limits_{j=0}^{G-1} v_jw_j$. Alors $v=0$ si et seulement si $V=0$. De plus, 
+
+    \begin{align*}
+        V^TAV & = \sum_{k=0}^{G-1}\sum_{j=0}^{G-1}v_ka_{k,j}v_j = \sum_{k=0}^{G-1}\sum_{j=0}^{G-1} v_k a(w_j,w_k)v_j \\ \\
+        &= a\left(\sum_{j=0}^{G-1} v_jw_j,\sum_{k=0}^{G-1} v_kw_k\right) = a(v,v).
+    \end{align*}
+
+    Comme $$a(v,v) = \int_\Omega (\eta \, \vert \vert \nabla v \, \vert \vert ^2 + \lambda v^2) \, dxdy \geq0,$$ que $\eta(x,y) \geq \eta_0 > 0$ et $\lambda > 0$, alors par positivité de l'intégrale, 
+
+    \[
+        a(v,v) = 0 \quad \Longleftrightarrow \quad v=0 \quad \Longleftrightarrow \quad V=0.
+    \]
+
+    On en déduit que $A$ est définie positive et donc que $A$ est inversible.
+\end{reponse}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{reponse}{29}
+
+\textbf{(k)} Soient $V = (v_0,\dots, v_{G-1})^T \in \mathcal{M}_{G,1}\left(\mathbb{R}^G\right)$ et $v = \sum\limits_{k=0}^{G-1} v_kw_k \in V_h$. Alors, comme le montre le calcul intermédiaire de la question 28(h), 
+
+\[
+    V^TAV = a(v,v).
+\]
+
+De plus, 
+
+\begin{align*}
+    a(v,v) = & \int_\Omega (\eta \, \vert \vert \nabla v \, \vert \vert ^2 + \lambda v^2) \, dxdy = \int_\Omega \eta \, \vert \vert \nabla v \, \vert \vert ^2 \, dxdy + \lambda \int_\Omega v^2 \, dxdy \\ \\
+    & = \int_\Omega \eta \, \vert \vert \nabla v \, \vert \vert ^2 \, dxdy+ \lambda \, \vert \vert v \vert \vert _{L^2(\Omega)}^2.
+\end{align*}
+
+Comme $\eta (x,y) >0$ pour tout $(x,y) \in \Omega$, à $(x,y)$ fixé, $\eta$ est un scalaire. On a donc $\eta \, \vert \vert \nabla v \, \vert \vert ^2= \vert \vert \sqrt{\eta}\nabla v \, \vert \vert ^2$. Finalement, 
+
+\begin{align*}
+    a(v,v) = \int_\Omega & \vert \vert \sqrt{\eta}\nabla v \, \vert \vert ^2 \, dxdy+ \lambda \, \vert \vert v \vert \vert _{L^2(\Omega)}^2. \\ \\
+    & = \vert \vert \sqrt{\eta}\nabla v \, \vert \vert _{L^2(\Omega)^2}^2+ \lambda \, \vert \vert v \vert \vert _{L^2(\Omega)}^2.
+\end{align*}
+\end{reponse}
