@@ -28,7 +28,7 @@ tuple<int,int> invnumgb(int N, int M,int s){
 maillage maillageTR(int N, int M){
     maillage TRG(2*N*M);
     int k = 0;
-    bool direction = true; // true pour / et false pour \
+    bool direction = true; // true pour "/" et false pour "\"
 
     for (int l = 0; l < M; l++){
         for (int c = 0; c < N ; c++){
@@ -403,8 +403,10 @@ vector<double> bicg_stab(vector<double> B,maillage TRG, int N, int M, double a,
     vector<double> W = R;
     int it = 0;
 
+    double max_absB = max_abs(B);
+
     // Itérations, bicg_stab selon l'algorithme donné
-    while (max_abs(R) > tol && it < max_it){
+    while (max_abs(R)/max_absB > tol && it < max_it){
         AW = matvec(W,TRG,N,M,a,b,eta);
         double alpha = pdt_sc(R,R_etoile) / pdt_sc(AW,R_etoile);
 

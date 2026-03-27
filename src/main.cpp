@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cmath>
+#include <fstream>
 
 #include "fonctions.hpp"
 
@@ -66,39 +67,53 @@ double f(double x, double y,double eta0, double m,double (* eta) (double,double)
 
 
 
+double f0(double x, double y){
+    return f(x,y,0,1,[](double,double){return 1.;});
+}
 
 
+double eta(double eta0, double x, double y){
+    return 1. - eta0/4 * (x*x+y*y);
+}
 
 
 int main(){
     cout << "Début des tests numériques\n";
 
     // Déclaration des paramètres
-    const double eta0 = 0.;
+    //const double eta0 = 0.;
     const double a = 1.;
     const double b = 1.;
-    const int m = 1;
+    const int m = 31;
 
     auto lambda = [](double,double){ return 1.;};
-    auto eta = [](double x,double y){return 1.-(eta0/4.)*(x*x+y*y);};
 
+    auto eta1 = lambda;
 
     // Tests numériques
 
     affiche_maillage(10,14);
 
-    vector<int> valeurs_tests = {2,3,5,7,11,13,17,19,23,4,8,16,32,64,128,256,512};
+    vector<int> valeurs_tests = {2,4,8,16,32,64,128,256,512};
 
+    ofstream fichier("erreurs.txt");
+    if (!fichier.is_open()) {
+        cerr << "Erreur lors de l'ouverture du fichier.\n";
+        return 1;
+    }
+
+    fichier << "N e0 e1 e_inf\n";
 
     for (int N : valeurs_tests){
         maillage maillageNxN = maillageTR(N,N);
 
-        auto f0 = [](double x, double y){return f(x,y,eta0,0.,
-            [](double x,double y){return 1.-(eta0/4.)*(x*x+y*y);});};
+
+        //auto f0 = std::bind(&f,_1,_2,eta0,m,[](double,double){return 1.;});
 
         vector<double> B = scdmembre(f0,N,N,maillageNxN,a,b);
 
-        vector<double> uh = bicg_stab(B,maillageNxN,N,N,a,b,1e-9,1000,eta);
+
+        vector<double> uh = bicg_stab(B,maillageNxN,N,N,a,b,1e-8,50000,eta1);
 
         auto up0 = [](double x, double y){ return up(m,x,y);};
         vector<double> tab_err = erreurs(up0,uh,maillageNxN,N,N,a,b);
@@ -106,6 +121,9 @@ int main(){
         cout << "e0( 2/"<< N << ") = " << tab_err[0] << endl;
         cout << "e1( 2/"<< N << ") = " << tab_err[1] << endl;
         cout << "e2( 2/"<< N << ") = " << tab_err[2] << endl;
+
+
+        fichier << N << " " << tab_err[0] << " " << tab_err[1] << " " << tab_err[2] << "\n";
     }
 
 }
