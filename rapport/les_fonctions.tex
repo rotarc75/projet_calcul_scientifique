@@ -1,0 +1,518 @@
+L'annexe ci-dessous contient toutes les fonctions demandées dans les questions qui n'apparaissent pas explicitement dans le chapitre "Réponses aux questions théoriques" (cf. remarques en début de chaque partie du chapitre sus-mentionné). Nous avons pris la liberté d'ajouter quelques fonctions supplémentaires pour en alléger d'autres.
+
+\begin{codeblock}[fonctions.hpp]
+#ifndef FONCTIONS_H
+#define FONCTIONS_H
+
+#include <tuple>
+#include <vector>
+
+
+#include "triangle.hpp"
+
+using namespace std;
+
+typedef vector<vector<double>> matrix;
+typedef tuple<vector<double>,vector<double>> duplix;
+typedef vector<Triangle> maillage;
+
+vector<double> Subdiv(double a, int N);
+
+int numgb(int N, int M, int i, int j);
+
+tuple<int,int> invnumgb(int N, int M,int s);
+
+maillage maillageTR(int N, int M);
+
+duplix CoordsTrig(double a, double b, int N,int M, Triangle T);
+
+matrix CalcMatBT(vector<double> xs, vector<double> ys);
+
+vector<double> integ_eta_triang(double (* eta)(double,double),
+    maillage TRG,int N, int M,double a,double b);
+
+matrix DiffTerm(duplix xs_ys, double val);
+
+matrix ReacTerm(duplix xs_ys);
+
+vector<double> matvec(vector<double> V, maillage TRG, int N, int M,
+    double a, double b, double (* eta)(double,double));
+
+#endif
+
+vector<double> scdmembre(double rhsf(double,double), int N, int M, maillage TRG, double a, double b);
+
+double normL2(vector<double> V,maillage TRG, int N, int M, double a, double b);
+
+
+double normL2Grad(vector<double> V, maillage TRG, int N, int M, double a, double b);
+
+double pdt_sc(vector<double> u, vector<double> v);
+
+vector<double> cl_vec(double lbd, vector<double> u, double mu, vector<double> v);
+
+double max_abs(vector<double> V);
+
+vector<double> bicg_stab(vector<double> B,maillage TRG, int N, int M, double a,
+    double b, double tol,int max_it, double (* eta) (double,double));
+
+
+vector<double> erreurs(double (* solExa) (double,double),vector<double> uh,maillage TRG, int N, int M, double a, double b);
+\end{codeblock}
+
+\begin{codeblock}[fonctions.cpp]
+#include <stdlib.h>
+#include <cmath>
+
+#include "fonctions.hpp"
+
+
+
+// Fonction qui renvoie une subdivision uniforme de [-a,a]
+vector<double> Subdiv(double a, int N){
+    vector<double> subdiv = vector<double>(N+1);
+    double pas = 2*a / N;
+
+    for (int k = 0; k <= N; k++) subdiv[k] = -a + k*pas;
+
+    return subdiv;
+}
+
+// Fonction qui renvoie le numéro associé à des coordonnées
+int numgb(int N, int M, int i, int j){ return (N+1)*j + i; }
+
+//Fonction qui étant donné entier s valide, donne les coordonnées du noeud
+tuple<int,int> invnumgb(int N, int M,int s){
+    return {s % (N+1),s / (N+1)};
+}
+
+//Fonction qui étant donné un pavé de NM rectangles renvoie un TRG
+//triangulaire sous forme d'une liste qui contient les triangles
+maillage maillageTR(int N, int M){
+    maillage TRG(2*N*M);
+    int k = 0;
+    bool direction = true; // true pour / et false pour \
+
+    for (int l = 0; l < M; l++){
+        for (int c = 0; c < N ; c++){
+
+            //Pour alterner le sens des triangles à chaque petit rectangle
+            direction = (l+c)%2 == 0;
+
+            // Calcul des coordonnées des quatres sommets du rectangle
+            int bas_g = numgb(N,M,c,l);
+            int bas_d = numgb(N,M,c+1,l);
+            int haut_g = numgb(N,M,c,l+1);
+            int haut_d = numgb(N,M,c+1,l+1);
+
+            // Création des triangles
+            if (direction){
+                TRG[k] = Triangle(bas_g,haut_g,haut_d);
+                TRG[k+1] = Triangle(bas_g,bas_d,haut_d);
+            } else {
+                TRG[k] = Triangle(bas_g,haut_g,bas_d);
+                TRG[k+1] = Triangle(haut_g,haut_d,bas_d);
+            }
+
+            k += 2;
+        }
+    }
+
+    return TRG;
+}
+
+
+// Fonction qui renvoie les coordonnées des points du triangle
+duplix CoordsTrig(double a, double b, int N,
+    int M, Triangle T){
+    vector<double> xs = vector<double>(3);
+    vector<double> ys = vector<double>(3);
+
+    for (int k = 0; k < 3; k++){
+        tuple<int,int> tup = invnumgb(N,M,T.get(k));
+        xs[k] = -a + (2*a)/N * get<0>(tup);
+        ys[k] = -b + (2*b)/M * get<1>(tup);
+
+    }
+
+    return {xs,ys};
+}
+
+
+// Fonction qui renvoie la jacobienne de F_T
+// Voir question 20, elle justifie ce calcul
+matrix CalcMatBT(vector<double> xs, vector<double> ys){
+    double bt_00 = xs[1] - xs[0];
+    double bt_10 = ys[1] - ys[0];
+    double bt_01 = xs[2] - xs[0];
+    double bt_11 = ys[2] - ys[0];
+
+    return {{bt_00,bt_01},{bt_10,bt_11}};
+}
+
+
+
+
+double integ_triangle(double (* f)(double,double), Triangle T,int N, int M,double a,double b){
+
+    // Calcul du determinant de B_T
+    duplix xs_ys = CoordsTrig(a,b,N,M,T);
+    vector<double> xs = get<0>(xs_ys);
+    vector<double> ys = get<1>(xs_ys);
+
+    double det = abs((xs[1]-xs[0])*(ys[2]-ys[0]) - (ys[1]-ys[0])*(xs[2]-xs[0]));
+
+    // On determine les milieux des côtes de T
+    double m0x = (xs[0] + xs[1])/2.;
+    double m0y = (ys[0] + ys[1])/2.;
+    double m1x = (xs[1] + xs[2])/2.;
+    double m1y = (ys[1] + ys[2])/2.;
+    double m2x = (xs[0] + xs[2])/2.;
+    double m2y = (ys[0] + ys[2])/2.;
+
+    // Calculs de f \circ F_T en les milieux des côtés du triangles T^
+    double f0 = f(m0x,m0y);
+    double f1 = f(m1x,m1y);
+    double f2 = f(m2x,m2y);
+
+    return 1./6. * det * (f0 + f1 + f2);
+}
+
+
+vector<double> integ_eta_triang(double (* eta)(double,double),
+    maillage TRG,int N, int M,double a,double b){
+
+    vector<double> ET = vector<double>(TRG.size());
+    int k =0;
+
+    // Parcours du maillage
+    for (Triangle T : TRG){
+
+
+        ET[k] = integ_triangle(eta,T,N,M,a,b);
+        k++;
+    }
+
+    return ET;
+}
+
+
+matrix DiffTerm(duplix xs_ys, double val){
+    vector<double> xs = get<0>(xs_ys);
+    vector<double> ys = get<1>(xs_ys);
+
+    matrix BT = CalcMatBT(xs,ys);
+    double det = (xs[1]-xs[0])*(ys[2]-ys[0]) - (ys[1]-ys[0])*(xs[2]-xs[0]);
+
+    //Construction de la transposée de l'inverse de BT
+    matrix trsp_inv_BT = {{0,0},{0,0}};
+    trsp_inv_BT[0][0] = 1/det * BT[1][1];
+    trsp_inv_BT[0][1] = -1/det * BT[1][0];
+    trsp_inv_BT[1][0] = -1/det * BT[0][1];
+    trsp_inv_BT[1][1] = 1/det * BT[0][0];
+
+
+    //Calcul des Nabla_lambda^
+    vector<double> NLcha0 = {{-1,-1}}; //lambdacha0 = (1-x^-y^)
+    vector<double> NLcha1 = {{1,0}}; //lambdacha1 = x^
+    vector<double> NLcha2 = {{0,1}}; //lambdacha2 = y^
+    //Calcul des Nabla_lambda = BT*Nabla_lambdacha
+    double nl00 = trsp_inv_BT[0][0] * NLcha0[0] + trsp_inv_BT[0][1] * NLcha0[1];
+    double nl01 = trsp_inv_BT[1][0] * NLcha0[0] + trsp_inv_BT[1][1] * NLcha0[1];
+
+    double nl10 = trsp_inv_BT[0][0] * NLcha1[0] + trsp_inv_BT[0][1] * NLcha1[1];
+    double nl11 = trsp_inv_BT[1][0] * NLcha1[0] + trsp_inv_BT[1][1] * NLcha1[1];
+
+    double nl20 = trsp_inv_BT[0][0] * NLcha2[0] + trsp_inv_BT[0][1] * NLcha2[1];
+    double nl21 = trsp_inv_BT[1][0] * NLcha2[0] + trsp_inv_BT[1][1] * NLcha2[1];
+
+    //Calcul des produits scalaires * ET
+    double val00 = val * (nl00 * nl00 + nl01 * nl01);
+    double val01 = val * (nl00 * nl10 + nl01 * nl11);
+    double val02 = val * (nl00 * nl20 + nl01 * nl21);
+    double val11 = val * (nl10 * nl10 + nl11 * nl11);
+    double val12 = val * (nl10 * nl20 + nl11 * nl21);
+    double val22 = val * (nl20 * nl20 + nl21 * nl21);
+
+    return {{val00, val01, val02},
+        {val01, val11, val12},
+        {val02, val12, val22}
+    };
+}
+
+
+matrix ReacTerm(duplix xs_ys){
+    vector<double> xs = get<0>(xs_ys);
+    vector<double> ys = get<1>(xs_ys);
+
+    double det = (xs[1]-xs[0])*(ys[2]-ys[0]) - (ys[1]-ys[0])*(xs[2]-xs[0]);
+
+    //Calcul des integrales des lambda_i * lambda_j
+    double int_lambda_ii = abs(det) * 1.0/12.0;
+    double int_lambda_ij = abs(det) * 1.0/24.0;
+
+    return {{int_lambda_ii, int_lambda_ij, int_lambda_ij},
+        {int_lambda_ij, int_lambda_ii, int_lambda_ij},
+        {int_lambda_ij, int_lambda_ij,int_lambda_ii}};
+}
+
+
+
+
+vector<double> matvec(vector<double> V, maillage TRG, int N, int M,
+    double a, double b, double (* eta)(double,double)){
+
+    int K = 2*N*M;
+    vector<double> W((N+1)*(M+1));
+
+    // Contient les valeurs de l'integrales de eta sur chaque T
+    vector<double> VALS = integ_eta_triang(eta,TRG, N,M,a,b);
+
+    for (int t = 0; t < K; t++){
+        Triangle T = TRG[t];
+
+        // Calcul de B_T
+        duplix xs_ys = CoordsTrig(a,b,N,M,T);
+        matrix D = DiffTerm(xs_ys,VALS[t]);
+        matrix R = ReacTerm(xs_ys);
+
+        for (int i = 0; i < 3; i++){
+            int k = T.get(i);
+
+            // Calcul de la contribution
+            double res = 0;
+
+            for (int r = 0; r < 3; r++){
+                int j = T.get(r);
+
+                // aT = Diff + Reac
+                double PROD2 = D[r][i]+R[r][i];
+                res += V[j] * PROD2;
+            }
+
+            W[k] += res;
+        }
+    }
+
+    return W;
+}
+
+
+
+vector<double> scdmembre(double rhsf(double,double), int N, int M, maillage TRG,
+    double a, double b){
+
+    vector<double> B((N+1)*(M+1));
+    int K = 2*N*M;
+
+    for (int t = 0; t < K; t++){
+
+        duplix xs_ys = CoordsTrig(a,b,N,M,TRG[t]);
+        vector<double> xs = get<0>(xs_ys);
+        vector<double> ys = get<1>(xs_ys);
+
+        double det = abs((xs[1]-xs[0])*(ys[2]-ys[0]) - (ys[1]-ys[0])*(xs[2]-xs[0]));
+
+        // calcul des milieux
+        double m0x = (xs[0] + xs[1])/2.;
+        double m0y = (ys[0] + ys[1])/2.;
+        double m1x = (xs[1] + xs[2])/2.;
+        double m1y = (ys[1] + ys[2])/2.;
+        double m2x = (xs[0] + xs[2])/2.;
+        double m2y = (ys[0] + ys[2])/2.;
+
+        // Calculs de (f \circ F_T)*(w \circ F_T) en les milieux des côtés du triangles T^
+        double f0 = rhsf(m0x,m0y);
+        double f1 = rhsf(m1x,m1y);
+        double f2 = rhsf(m2x,m2y);
+
+        // Calcul des contributions des sommets de T aux noeuds
+        B[TRG[t].get(0)] += (det * (f0*0.5 + f2*0.5))/6;
+        B[TRG[t].get(1)] += (det * (f1*0.5 + f2*0.5))/6;
+        B[TRG[t].get(2)] += (det * (f0*0.5 + f1*0.5))/6;
+    }
+
+    return B;
+}
+
+
+double normL2(vector<double> V,maillage TRG, int N, int M, double a, double b){
+
+    int K = 2*N*M;
+    int G = (N+1)*(M+1);
+    vector<double> W(G);
+
+    // Calcul de AV
+    for (int t = 0; t < K; t++){
+        Triangle T = TRG[t];
+
+        duplix xs_ys = CoordsTrig(a,b,N,M,T);
+        matrix R = ReacTerm(xs_ys);
+
+        for (int i = 0; i < 3; i++){
+            int k = T.get(i);
+
+            // Calcul de la contribution
+            double res = 0;
+
+            for (int r = 0; r < 3; r++){
+                int j = T.get(r);
+
+                // aT = Diff + Reac (mais Diff = 0 car eta = 0)
+                res += V[j] * R[r][i];
+            }
+
+            W[k] += res;
+        }
+    }
+
+    // Calcul de V^T * (AV)
+    double norme_carre = 0;
+    for (int k = 0; k < G; k++)
+        norme_carre += V[k]*W[k];
+
+    return sqrt(norme_carre);
+}
+
+
+double normL2Grad(vector<double> V, maillage TRG, int N, int M, double a,
+    double b){
+
+    int K = 2*N*M;
+    int G = (N+1)*(M+1);
+    vector<double> W(G);
+
+    // Contient les valeurs de l'integrales de eta sur chaque T
+    vector<double> VALS = integ_eta_triang([](double,double){return 1.;},TRG, N,M,a,b);
+
+    // Calcul de AV
+    for (int t = 0; t < K; t++){
+        Triangle T = TRG[t];
+
+        duplix xs_ys = CoordsTrig(a,b,N,M,T);
+        matrix D = DiffTerm(xs_ys,VALS[t]);
+
+        for (int i = 0; i < 3; i++){
+            int k = T.get(i);
+
+            // Calcul de la contribution
+            double res = 0;
+
+            for (int r = 0; r < 3; r++){
+                int j = T.get(r);
+
+                // aT = Diff + Reac (mais reac = 0 car lambda = 0)
+                res += V[j] * D[r][i];
+            }
+
+            W[k] += res;
+        }
+    }
+
+    // Calcul de V^T * (AV)
+    double norme_carre = 0;
+    for (int k = 0; k < G; k++)
+        norme_carre += V[k]*W[k];
+
+    return sqrt(norme_carre);
+}
+
+// Fonction qui calcule le produit scalaire de deux vecteurs
+double pdt_sc(vector<double> u, vector<double> v){
+    double prod = 0;
+    int N = u.size();
+
+    for (int k = 0; k < N; k++){
+        prod += u[k]*v[k];
+    }
+
+    return prod;
+}
+
+// Fonction qui renvoie la combinaison linéaire de deux vecteurs
+vector<double> cl_vec(double lbd, vector<double> u, double mu, vector<double> v){
+    int L = u.size();
+    vector<double> cl(L);
+
+    for (int k = 0; k < L; k++){
+        cl[k] = lbd*u[k] + mu*v[k];
+    }
+
+    return cl;
+}
+
+
+// Fonction qui renvoie la composante max en valeur absolue d'un vecteur
+double max_abs(vector<double> V){
+    double max = V[0];
+
+    for (double x : V)
+        if (abs(x) > max) max = abs(x);
+
+    return max;
+}
+
+vector<double> bicg_stab(vector<double> B,maillage TRG, int N, int M, double a,
+    double b, double tol,int max_it, double (* eta) (double,double)){
+
+    vector<double> AW,AS,S,R_tmp;
+    vector<double> X((N+1)*(M+1),0);
+
+    // on choisit X0=0 (ca nous évite un prod mat vec)
+    vector<double> R = B;
+    vector<double> R_etoile = R;
+
+
+    vector<double> W = R;
+    int it = 0;
+
+    // Itérations, bicg_stab selon l'algorithme donné
+    while (max_abs(R) > tol && it < max_it){
+        AW = matvec(W,TRG,N,M,a,b,eta);
+        double alpha = pdt_sc(R,R_etoile) / pdt_sc(AW,R_etoile);
+
+        S = cl_vec(1.,R,-alpha,AW);
+
+        AS = matvec(S,TRG,N,M,a,b,eta);
+        double omega = pdt_sc(AS,S)/pdt_sc(AS,AS);
+
+        // Actualisation des variables pour le prochain tour de boucle
+        X = cl_vec(1.,X,1.,cl_vec(alpha,W,omega,S));
+        R_tmp = R;
+        R = cl_vec(1.,S,-omega,AS);
+
+        double beta = (pdt_sc(R,R_etoile) * alpha) / (pdt_sc(R_tmp,R_etoile) * omega);
+        W = cl_vec(1.,R,beta,cl_vec(1.,W,-omega,AW));
+        it++;
+    }
+
+    return X;
+}
+
+
+vector<double> erreurs(double (* solExa) (double,double),vector<double> uh,
+    maillage TRG, int N, int M, double a, double b){
+
+    vector<double> tab_err(3);
+    int G = (N+1)*(M+1);
+
+    vector<double> uchap(G);
+
+    for (int s = 0; s < G; s++){
+        tuple<int,int> coord_noeud = invnumgb(N,M,s);
+        double x = -a + (2*a)/N * get<0>(coord_noeud);
+        double y = -b + (2*b)/M * get<1>(coord_noeud);
+
+        uchap[s] = solExa(x,y);
+    }
+
+
+    vector<double> diff = cl_vec(1.,uchap,-1.,uh);
+
+    tab_err[0] = normL2(diff,TRG,N,M,a,b) / normL2(uchap,TRG,N,M,a,b);
+    tab_err[1] = normL2Grad(diff,TRG,N,M,a,b) / normL2Grad(uchap,TRG,N,M,a,b);
+    tab_err[2] = max_abs(diff) / max_abs(uchap);
+
+    return tab_err;
+}
+\end{codeblock}
