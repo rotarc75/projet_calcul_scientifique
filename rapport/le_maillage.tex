@@ -14,27 +14,17 @@
 
 \begin{center}
 \begin{tikzpicture}[scale=1.5]
-    % Tracer le rectangle principal (la grille)
     \draw[thick] (0,0) rectangle (5,3);
-
-    % Ajouter les étiquettes aux coins
     \node[below left] at (0,0) {$0$};
     \node[below right] at (5,0) {$N$};
     \node[above left] at (0,3) {$M$};
-
-    % Tracer les lignes horizontales (en rouge comme sur le brouillon)
     \draw[red] (0, 0.6) -- (5, 0.6);
     \draw[red] (0, 1.2) -- (5, 1.2);
     \draw[red] (0, 1.8) -- (5, 1.8);
     \draw[red] (0, 2.4) -- (5, 2.4);
-
-    % Ajouter les repères 'l' et 'k' (en bleu-vert)
     \node[left, text=teal] at (0, 1.8) {$l$};
     \draw[thick, teal] (2.5, 0.1) -- (2.5, -0.1) node[below] {$k$};
-
-    % Placer le point 's'
     \filldraw[teal] (2.5, 1.8) circle (1.5pt) node[above right] {$s$};
-
 \end{tikzpicture}
 \end{center}
 
@@ -64,30 +54,19 @@ Pour illustrer la situation, nous avons décidé de poser $N=4$ et $M=3$, pour u
 
 \begin{center}
 \begin{tikzpicture}[scale=1.5]
-    % Tracer la grille principale (4x3 cellules)
     \draw[step=1cm, thick] (0,0) grid (4,3);
-
-    % Tracer les diagonales et placer les labels avec des boucles
     \foreach \y in {0,1,2} {
         \foreach \x in {0,1,2,3} {
-            % Calcul du numéro de base pour la cellule (x,y)
             \pgfmathtruncatemacro{\cellnum}{\y*4 + \x}
             \pgfmathtruncatemacro{\tbase}{\cellnum * 2}
             \pgfmathtruncatemacro{\tplus}{\tbase + 1}
-            
-            % Alternance des diagonales selon la parité de (x+y)
             \pgfmathtruncatemacro{\parity}{mod(\x+\y,2)}
-            
             \ifnum\parity=0
-                % Diagonale de type "/" (cas pair, ex: première case 0,0)
                 \draw (\x, \y) -- (\x+1, \y+1);
-                % Placement des labels : T_base en haut à gauche, T_plus en bas à droite
                 \node at (\x+0.3, \y+0.75) {\footnotesize $T_{\tbase}$};
                 \node at (\x+0.7, \y+0.25) {\footnotesize $T_{\tplus}$};
             \else
-                % Diagonale de type "\" (cas impair, ex: deuxième case 1,0)
                 \draw (\x, \y+1) -- (\x+1, \y);
-                % Placement des labels : T_base en bas à gauche, T_plus en haut à droite
                 \node at (\x+0.3, \y+0.25) {\footnotesize $T_{\tbase}$};
                 \node at (\x+0.7, \y+0.75) {\footnotesize $T_{\tplus}$};
             \fi
@@ -328,20 +307,13 @@ Si pour tout $i \in \{ \, 0,1,2 \, \}$, $f(x_i,y_i)=0$, alors
 \begin{reponse}{18}
 
 \begin{center}
-\begin{tikzpicture}[scale=3] % Échelle agrandie pour que le schéma soit bien lisible
-    % Tracer les axes
+\begin{tikzpicture}[scale=3] 
     \draw[->, gray] (-0.3, 0) -- (1.5, 0) node[right, black] {$x$};
     \draw[->, gray] (0, -0.3) -- (0, 1.5) node[above, black] {$y$};
-
-    % Tracer le triangle de référence
     \draw[thick, black] (0,0) -- (1,0) -- (0,1) -- cycle;
-
-    % Placer les sommets et leurs étiquettes
     \filldraw (0,0) circle (0.5pt) node[below left] {$\hat{A}_0(0,0)$};
     \filldraw (1,0) circle (0.5pt) node[below] {$\hat{A}_1(1,0)$};
     \filldraw (0,1) circle (0.5pt) node[left] {$\hat{A}_2(0,1)$};
-
-    % Placer le symbole du triangle à l'intérieur
     \node at (0.3, 0.3) {$\hat{T}$};
 \end{tikzpicture}
 \end{center}
