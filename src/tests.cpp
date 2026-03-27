@@ -1,3 +1,4 @@
+#include <cmath>
 #include <iostream>
 
 #include "fonctions.hpp"
@@ -37,7 +38,6 @@ void test_invnumgb(int &k, int N, int M, int s, tuple<int,int> sol_attendue){
     }
     k++;
 }
-
 
 
 void test_maillageTR(int &k, int N, int M, vector<Triangle> sol_attendue){
@@ -97,10 +97,8 @@ void test_CoordsTrig(int &num_test, double a, double b, int N, int M, Triangle T
 }
 
 
-
-
 void test_CalcMatBT(int &num_test, vector<double> xs, vector<double> ys,
-    vector<vector<double>> sol_attendue){
+    matrix sol_attendue){
 
     auto sol_obtenue = CalcMatBT(xs,ys);
     bool reussi = true;
@@ -123,6 +121,7 @@ void test_CalcMatBT(int &num_test, vector<double> xs, vector<double> ys,
 
     num_test++;
 }
+
 
 void test_integ_eta_triang(int &num_test, double (* eta)(double,double),
     vector<Triangle> maillage,int N, int M,double a,double b,
@@ -152,7 +151,6 @@ void test_integ_eta_triang(int &num_test, double (* eta)(double,double),
 }
 
 
-
 void test_DiffTerm(int &num_test,duplix xs_ys, double val, matrix sol_attendue){
 
     matrix sol_obtenue = DiffTerm(xs_ys,val);
@@ -177,8 +175,6 @@ void test_DiffTerm(int &num_test,duplix xs_ys, double val, matrix sol_attendue){
 
     num_test++;
 }
-
-vector<vector<double>> ReacTerm(tuple<vector<double>,vector<double>> xs_ys, double val);
 
 
 void test_ReacTerm(int &num_test,duplix xs_ys, matrix sol_attendue){
@@ -205,7 +201,6 @@ void test_ReacTerm(int &num_test,duplix xs_ys, matrix sol_attendue){
 
     num_test++;
 }
-
 
 
 void test_matvec(int &num_test, vector<double> V, vector<Triangle> maillage,
@@ -235,6 +230,7 @@ void test_matvec(int &num_test, vector<double> V, vector<Triangle> maillage,
     num_test++;
 }
 
+
 void test_pdt_sc(int &num_test, vector<double> u, vector<double> v,
         double sol_attendue){
 
@@ -246,10 +242,6 @@ void test_pdt_sc(int &num_test, vector<double> u, vector<double> v,
     }
     num_test++;
 }
-
-
-
-
 
 
 void test_cl_vec(int &num_test,double lbd, vector<double> u, double mu,
@@ -291,7 +283,6 @@ void test_max_abs(int &num_test, vector<double> V, double sol_attendue){
 }
 
 
-
 void test_scdmembre(int &num_test, double rhsf(double,double), int N, int M, maillage TRG, double a, double b, vector<double> sol_attendue){
 
 
@@ -317,6 +308,33 @@ void test_scdmembre(int &num_test, double rhsf(double,double), int N, int M, mai
     num_test++;
 }
 
+
+void test_normL2(int &num_test,vector<double> V,maillage TRG, int N, int M, double a,
+    double b, double sol_attendue){
+
+    if (abs(normL2(V,TRG,N,M,a,b) - sol_attendue) < 1e-9){
+        cout << VERT << "Test "<<num_test<<" : réussi !\n" << BLANC;
+    } else {
+        cout << ROUGE << "Test "<<num_test<<" : échoué !\n" << BLANC;
+        cout << "   Pas d'affichage de debug pour le moment.\n";
+    }
+
+    num_test++;
+}
+
+
+void test_normL2Grad(int &num_test, vector<double> V, maillage TRG, int N, int M,
+    double a, double b, double sol_attendue){
+
+    if (abs(normL2Grad(V,TRG,N,M,a,b) - sol_attendue) < 1e-9){
+        cout << VERT << "Test "<<num_test<<" : réussi !\n" << BLANC;
+    } else {
+        cout << ROUGE << "Test "<<num_test<<" : échoué !\n" << BLANC;
+        cout << "   Pas d'affichage de debug pour le moment.\n";
+    }
+
+    num_test++;
+}
 
 double eta1(double x, double y) {
     return 1.0;
@@ -345,6 +363,7 @@ int main(){
 
     int num_tests = 1;
 
+    // Test 1,2
     test_numgb(num_tests,2, 2, 1, 1,4);
     test_numgb(num_tests,18, 50, 11, 31,600);
 
@@ -352,7 +371,7 @@ int main(){
     cout << "\n\n\n";
     cout << "--------------Tests invnumgb--------------\n";
 
-
+    // Test 3,4,5
     test_invnumgb(num_tests,2, 2,4,{1,1});
     test_invnumgb(num_tests,21, 3,45,{1,2});
     test_invnumgb(num_tests,101, 101,3923,{47,38});
@@ -364,18 +383,18 @@ int main(){
 
 
 
-    // Test pour N = 1, M = 1
-    vector<Triangle> maillage(2);
+    // Test 6 : N = 1, M = 1
+    maillage maillage0(2);
 
-    maillage[0] = Triangle(0, 2, 3);
-    maillage[1] = Triangle(0, 1, 3);
+    maillage0[0] = Triangle(0, 2, 3);
+    maillage0[1] = Triangle(0, 1, 3);
 
-    test_maillageTR(num_tests, 1, 1, maillage);
+    test_maillageTR(num_tests, 1, 1, maillage0);
 
 
 
-    // Test pour N = 2, M = 1
-    vector<Triangle> maillage1 = vector<Triangle>(4);
+    // Test 7 : N = 2, M = 1
+    maillage maillage1(4);
 
     maillage1[0] = Triangle(0,3,4);
     maillage1[1] = Triangle(0,1,4);
@@ -386,7 +405,7 @@ int main(){
 
 
 
-    // Test pour N = 3, M = 2
+    // Test 8: N = 3, M = 2
     vector<Triangle> maillage2(12);
 
     maillage2[0] = Triangle(0, 4, 5);
@@ -411,7 +430,7 @@ int main(){
 
 
 
-    // Test pour N = 4, M = 2
+    // Test 9 : N = 4, M = 2
     vector<Triangle> maillage3 = vector<Triangle>(16);
 
     maillage3[0] = Triangle(0, 5, 6);
@@ -436,7 +455,7 @@ int main(){
 
 
 
-    // Test pour N = 4, M = 4
+    // Test 10 : N = 4, M = 4
     vector<Triangle> maillage4(32);
 
     maillage4[0]  = Triangle(0, 5, 6);
@@ -478,7 +497,7 @@ int main(){
     test_maillageTR(num_tests, 4, 4, maillage4);
 
 
-    // Test pour N = 3, M = 3
+    // Test 11 : N = 3, M = 3
     vector<Triangle> maillage5(18);
 
     maillage5[0] = Triangle(0, 4, 5);
@@ -506,71 +525,53 @@ int main(){
 
 
 
-    cout << "\n\n\n";
-    cout << "--------------Tests CoordsTrig--------------\n";
-
-    cout << "Aucun test n'a été écrit pour cette section pour le moment...\n";
-
-
-
-
 
     cout << "\n\n\n";
     cout << "--------------Tests CalcMatBT--------------\n";
 
 
-    // Test pour le triangle de référence
+    // Test 12
     vector<double> xs1 = {0.0, 1.0, 0.0};
     vector<double> ys1 = {0.0, 0.0, 1.0};
-    vector<vector<double>> BT_attendue1 = {
-        {1.0, 0.0},
-        {0.0, 1.0}
-    };
-    test_CalcMatBT(num_tests, xs1, ys1, BT_attendue1);
+    matrix BT1 = {{1.0, 0.0},{0.0, 1.0}};
+    test_CalcMatBT(num_tests, xs1, ys1, BT1);
 
-
-    // Test pour le triangle : A0(1,1), A1(4,2), A2(2,5)
+    // Test 13
     vector<double> xs2 = {1.0, 4.0, 2.0};
     vector<double> ys2 = {1.0, 2.0, 5.0};
-    vector<vector<double>> BT_attendue2 = {
-        {3.0, 1.0},
-        {1.0, 4.0}
-    };
-    test_CalcMatBT(num_tests, xs2, ys2, BT_attendue2);
+    matrix BT2 = {{3.0, 1.0},{1.0, 4.0}};
+    test_CalcMatBT(num_tests, xs2, ys2, BT2);
 
 
-    // Test pour un triangle plat
+    // Test 14 : un triangle plat
     vector<double> xs3 = {1.0, 2.0, 3.0};
     vector<double> ys3 = {1.0, 2.0, 3.0};
-    vector<vector<double>> BT_attendue3 = {
-        {1.0, 2.0},
-        {1.0, 2.0}
-    };
-    test_CalcMatBT(num_tests, xs3, ys3, BT_attendue3);
+    matrix BT3 = {{1.0, 2.0},{1.0, 2.0}};
+    test_CalcMatBT(num_tests, xs3, ys3, BT3);
 
 
 
     cout << "\n\n\n";
     cout << "--------------Tests integ_eta_triang--------------\n";
 
-    // Test eta (x,y) = 1
+    // Test 15 : eta (x,y) = 1
     int N1 = 2;
     int M1 = 2;
 
-    auto maillage2x2 =   maillageTR(N1,M1);
+    maillage maillage2x2 =   maillageTR(N1,M1);
     vector<double> sol_attendue1(2*N1*M1, 0.5);
 
     test_integ_eta_triang(num_tests, eta1, maillage2x2, N1, M1, 1.0, 1.0, sol_attendue1);
 
 
-    // Test eta(x,y) = x + 2y + 5
+    // Test 16 : eta(x,y) = x + 2y + 5
 
-    auto maillage1x1 =   maillageTR(1,1);
+    maillage maillage1x1 =   maillageTR(1,1);
     vector<double> sol_attendue2 = {32./3., 28./3.};
     test_integ_eta_triang(num_tests, eta2, maillage1x1, 1, 1, 1.0, 1.0, sol_attendue2);
 
 
-    // Test eta(x,y) = x² + y² + 1
+    // Test 17 : eta(x,y) = x² + y² + 1
 
     vector<double> sol_attendue3 = {10.0 / 3.0, 10.0 / 3.0};
 
@@ -580,48 +581,47 @@ int main(){
     cout << "\n\n\n";
     cout << "--------------Tests DiffTerm--------------\n";
 
-    // Test triangle de référence
+    // Test 18 : triangle de référence
     vector<double> xs4 = {0.0, 1.0, 0.0};
     vector<double> ys4 = {0.0, 0.0, 1.0};
     duplix T1 = {xs4, ys4};
     double val1 = 0.5;
 
-    vector<vector<double>> matrice_attendue1 = {
+    matrix sol_attendue4 =  {
         { 1.0, -0.5, -0.5},
         {-0.5,  0.5,  0.0},
         {-0.5,  0.0,  0.5}
     };
 
-    test_DiffTerm(num_tests, T1, val1, matrice_attendue1);
+    test_DiffTerm(num_tests, T1, val1, sol_attendue4);
 
-
-    // Test 2
+    // Test 19
     vector<double> xs5 = {0.0, 2.0, 1.0};
     vector<double> ys5 = {0.0, 0.0, 1.0};
     duplix T2 = {xs5, ys5};
     double val2 = 1.0;
 
-    vector<vector<double>> matrice_attendue2 = {
+    matrix sol_attendue5 = {
         { 0.5,  0.0, -0.5},
         { 0.0,  0.5, -0.5},
         {-0.5, -0.5,  1.0}
     };
 
-    test_DiffTerm(num_tests, T2, val2, matrice_attendue2);
+    test_DiffTerm(num_tests, T2, val2, sol_attendue5);
 
-    // Test
+    // Test 20
     vector<double> xs6 = {1.0, 3.0, 1.0};
     vector<double> ys6 = {1.0, 1.0, 4.0};
-    duplix T3 = make_tuple(xs6, ys6);
+    duplix T3 = {xs6, ys6};
     double val3 = 3.0;
 
-    vector<vector<double>> matrice_attendue3 = {
+    matrix sol_attendue6 = {
         { 13.0/12.0, -0.75, -1.0/3.0 },
         { -0.75,      0.75,  0.0 },
         { -1.0/3.0,   0.0,   1.0/3.0 }
     };
 
-    test_DiffTerm(num_tests, T3, val3, matrice_attendue3);
+    test_DiffTerm(num_tests, T3, val3, sol_attendue6);
 
 
 
@@ -629,118 +629,120 @@ int main(){
     cout << "--------------Tests ReacTerm--------------\n";
 
 
-    // Test Le triangle de référence (Aire = 0.5)
-    vector<double> xs_r1 = {0.0, 1.0, 0.0};
-    vector<double> ys_r1 = {0.0, 0.0, 1.0};
-    duplix T_r1 = {xs_r1, ys_r1};
+    // Test 21 : triangle de référence
+    vector<double> xs7 = {0.0, 1.0, 0.0};
+    vector<double> ys7 = {0.0, 0.0, 1.0};
+    duplix T4 = {xs7, ys7};
 
-    vector<vector<double>> matrice_reac1 = {
+    matrix sol_attendue7 = {
         { 1.0/12.0, 1.0/24.0, 1.0/24.0 },
         { 1.0/24.0, 1.0/12.0, 1.0/24.0 },
         { 1.0/24.0, 1.0/24.0, 1.0/12.0 }
     };
-    test_ReacTerm(num_tests, T_r1, matrice_reac1);
 
-    // Test 2
-    vector<double> xs_r2 = {1.0, 3.0, 1.0};
-    vector<double> ys_r2 = {1.0, 1.0, 4.0};
-    duplix T_r2 = {xs_r2, ys_r2};
+    test_ReacTerm(num_tests, T4, sol_attendue7);
 
-    vector<vector<double>> matrice_reac2 = {
+
+    // Test 22
+    vector<double> xs8 = {1.0, 3.0, 1.0};
+    vector<double> ys8 = {1.0, 1.0, 4.0};
+    duplix T5 = {xs8, ys8};
+
+    matrix sol_attendue8 = {
         { 0.50, 0.25, 0.25 },
         { 0.25, 0.50, 0.25 },
         { 0.25, 0.25, 0.50 }
     };
-    test_ReacTerm(num_tests, T_r2, matrice_reac2);
+
+    test_ReacTerm(num_tests, T5, sol_attendue8);
 
 
-    // Test
-    vector<double> xs_r3 = {-100.0, 500.0, 0.0};
-    vector<double> ys_r3 = {-50.0, -50.0, 1000.0};
-    duplix T_r3 = {xs_r3, ys_r3};
+    // Test 23
+    vector<double> xs9 = {-100.0, 500.0, 0.0};
+    vector<double> ys9 = {-50.0, -50.0, 1000.0};
+    duplix T6 = {xs9, ys9};
 
-    vector<vector<double>> matrice_reac3 = {
+    matrix sol_attendue9 = {
         { 52500.0, 26250.0, 26250.0 },
         { 26250.0, 52500.0, 26250.0 },
         { 26250.0, 26250.0, 52500.0 }
     };
 
-    test_ReacTerm(num_tests, T_r3, matrice_reac3);
+    test_ReacTerm(num_tests, T6, sol_attendue9);
 
 
     cout << "\n\n\n";
     cout << "--------------Tests matvec--------------\n";
 
-    // Test 1 : Le vecteur nul
+    // Test 24 : Le vecteur nul
     vector<double> V = {0.0, 0.0, 0.0, 0.0};
-    vector<double> sol_attendue70 = {0.0, 0.0, 0.0, 0.0};
-    vector<double> W_nul_obtenu = matvec(V, maillage1x1, 1, 1, 1.0, 1.0, eta1);
-
-    test_matvec(num_tests, V,maillage1x1, 1,1,1.0,1.0,eta1,sol_attendue70);
+    vector<double> sol_attendue10 = {0.0, 0.0, 0.0, 0.0};
+    test_matvec(num_tests, V, maillage1x1, 1,1,1.0,1.0,eta1,sol_attendue10);
 
 
-    // Test 2
-    vector<double> V_un = {1.0, 1.0, 1.0, 1.0};
-    vector<double> sol_attendue71 = {4.0 / 3.0, 2.0 / 3.0, 2.0 / 3.0, 4.0 / 3.0};
+    // Test 25
+    vector<double> V1 = {1.0, 1.0, 1.0, 1.0};
+    vector<double> sol_attendue11 = {4.0 / 3.0, 2.0 / 3.0, 2.0 / 3.0, 4.0 / 3.0};
+    test_matvec(num_tests, V1, maillage1x1, 1, 1, 1.0, 1.0, eta1, sol_attendue11);
 
-    test_matvec(num_tests, V_un, maillage1x1, 1, 1, 1.0, 1.0, eta1, sol_attendue71);
-
-    // Test
-    vector<double> V_col0 = {1.0, 0.0, 0.0, 0.0};
-    vector<double> sol_attendue72 = {5.0 / 3.0, -1.0 / 3.0, -1.0 / 3.0, 1.0 / 3.0};
-
-    test_matvec(num_tests, V_col0, maillage1x1, 1, 1, 1.0, 1.0, eta1, sol_attendue72);
+    // Test 26
+    vector<double> V2 = {1.0, 0.0, 0.0, 0.0};
+    vector<double> sol_attendue12 = {5.0 / 3.0, -1.0 / 3.0, -1.0 / 3.0, 1.0 / 3.0};
+    test_matvec(num_tests, V2, maillage1x1, 1, 1, 1.0, 1.0, eta1, sol_attendue12);
 
 
     cout << "\n\n\n";
     cout << "--------------Tests pdt_sc--------------\n";
 
-    vector<double> u1 = {1.0, 2.0, 3.0};
-    vector<double> v1 = {4.0, -5.0, 6.0};
-    test_pdt_sc(num_tests, u1, v1, 12.0);
+    // Test 27
+    vector<double> U3 = {1.0, 2.0, 3.0};
+    vector<double> V3 = {4.0, -5.0, 6.0};
+    test_pdt_sc(num_tests, U3, V3, 12.0);
 
 
+    // Test 28
+    vector<double> U4 = {1.0, 0.0, -1.0};
+    vector<double> V4 = {0.0, 1.0, 0.0};
+    test_pdt_sc(num_tests, U4, V4, 0.0);
 
-    vector<double> u2 = {1.0, 0.0, -1.0};
-    vector<double> v2 = {0.0, 1.0, 0.0};
-    test_pdt_sc(num_tests, u2, v2, 0.0);
+    // Test 29
+    vector<double> U5 = {0.0, 0.0, 0.0};
+    vector<double> V5 = {7.5, -3.14, 42.0};
+    test_pdt_sc(num_tests, U5, V5, 0.0);
 
-    vector<double> u3 = {0.0, 0.0, 0.0};
-    vector<double> v3 = {7.5, -3.14, 42.0};
-    test_pdt_sc(num_tests, u3, v3, 0.0);
-
-
-    vector<double> u4 = {0.5, 0.25, 1.5};
-    vector<double> v4 = {2.0, 4.0, -2.0};
-    test_pdt_sc(num_tests, u4, v4, -1.0);
+    // Test 30
+    vector<double> U6 = {0.5, 0.25, 1.5};
+    vector<double> V6 = {2.0, 4.0, -2.0};
+    test_pdt_sc(num_tests, U6, V6, -1.0);
 
 
     cout << "\n\n\n";
     cout << "--------------Tests cl_vec--------------\n";
 
-    vector<double> u10 = {1.0, 2.0, 3.0};
-    vector<double> v10 = {4.0, 5.0, 6.0};
-    vector<double> sol10 = {14.0, 19.0, 24.0};
-    test_cl_vec(num_tests, 2.0, u10, 3.0, v10, sol10);
+    // Test 31
+    vector<double> U7 = {1.0, 2.0, 3.0};
+    vector<double> V7 = {4.0, 5.0, 6.0};
+    vector<double> sol_attendue13 = {14.0, 19.0, 24.0};
+    test_cl_vec(num_tests, 2.0, U7, 3.0, V7, sol_attendue13);
+
+    // Test 32
+    vector<double> U8 {1.5, -2.5};
+    vector<double> V8 = {1.5, -2.5};
+    vector<double> sol_attendue14 = {0.0, 0.0};
+    test_cl_vec(num_tests, 1.0, U8, -1.0, V8, sol_attendue14);
+
+    // Test 33
+    vector<double> U9 = {10.0, 20.0};
+    vector<double> V9 = {30.0, 40.0};
+    vector<double> sol_attendue15= {0.0, 0.0};
+    test_cl_vec(num_tests, 0.0, U9, 0.0, V9, sol_attendue15);
 
 
-    vector<double> u11 = {1.5, -2.5};
-    vector<double> v11 = {1.5, -2.5};
-    vector<double> sol11 = {0.0, 0.0};
-    test_cl_vec(num_tests, 1.0, u11, -1.0, v11, sol11);
-
-
-    vector<double> u12 = {10.0, 20.0};
-    vector<double> v12 = {30.0, 40.0};
-    vector<double> sol12 = {0.0, 0.0};
-    test_cl_vec(num_tests, 0.0, u12, 0.0, v12, sol12);
-
-
-
-    vector<double> u13 = {1.0, 3.0};
-    vector<double> v13 = {4.0, -8.0};
-    vector<double> sol13 = {1.5, -0.5};
-    test_cl_vec(num_tests, 0.5, u13, 0.25, v13, sol13);
+    // Test 34
+    vector<double> U10 = {1.0, 3.0};
+    vector<double> V10 = {4.0, -8.0};
+    vector<double> sol_attendue16 = {1.5, -0.5};
+    test_cl_vec(num_tests, 0.5, U10, 0.25, V10, sol_attendue16);
 
 
 
@@ -748,15 +750,17 @@ int main(){
     cout << "\n\n\n";
     cout << "--------------Tests max_abs--------------\n";
 
-    vector<double> V1 = {1.5, -2.0, 3.5, -1.0};
-    test_max_abs(num_tests, V1, 3.5);
+    // Test 35
+    vector<double> V11 = {1.5, -2.0, 3.5, -1.0};
+    test_max_abs(num_tests, V11, 3.5);
 
-    vector<double> V2 = {4.0, -7.2, 3.1, 5.0};
-    test_max_abs(num_tests, V2, 7.2);
+    // Test 36
+    vector<double> V12 = {4.0, -7.2, 3.1, 5.0};
+    test_max_abs(num_tests, V12, 7.2);
 
-
-    vector<double> V3 = {0.0, 0.0, 0.0};
-    test_max_abs(num_tests, V3, 0.0);
+    // Test 37
+    vector<double> V13 = {0.0, 0.0, 0.0};
+    test_max_abs(num_tests, V13, 0.0);
 
 
 
@@ -765,25 +769,66 @@ int main(){
 
 
 
-    int G = 11*15;
-    vector<double> sol_zero(G, 0.0);
+
+    // Test 38
+    vector<double> sol_attendue17(11*15, 0.0);
     auto f0 = [](double,double){return 0.;};
-    test_scdmembre(num_tests, f0 , 10, 14, maillage2x2, 1., 1., sol_zero);
+    maillage maillage10x14 = maillageTR(10,14);
+    test_scdmembre(num_tests, f0 , 10, 14, maillage10x14, 1., 1., sol_attendue17);
 
 
 
-    auto f1 = [](double,double){return 1.;};
+    // Test 39
+    auto f1 = [](double,double){return 1.0;};
+    double aire_T = (2.0 * 2.0) / 6.0;
+    vector<double> sol_attendue18 = {2*aire_T,aire_T,aire_T,2*aire_T};
+    test_scdmembre(num_tests, f1, 1, 1, maillage1x1, 1.0, 1.0, sol_attendue18);
 
 
-    double aire_T = (1.0 * 1.0) / 2.0;
-    vector<double> sol_un(4, 0.0);
-    sol_un[0] = 2.0 * (aire_T / 3.0);
-    sol_un[1] = 1.0 * (aire_T / 3.0);
-    sol_un[2] = 1.0 * (aire_T / 3.0);
-    sol_un[3] = 2.0 * (aire_T / 3.0);
 
-    // N = 1, M = 1
-    test_scdmembre(num_tests, f1, 1, 1, maillage1x1, 1.0, 1.0, sol_un);
+    cout << "\n\n\n";
+    cout << "--------------Tests normL2--------------\n";
+
+    int N2 = 2, M2 = 2;
+    double a = 1.0, b = 1.0;
+    int G = (N2 + 1) * (M2 + 1);
+
+
+    // Test 40
+    vector<double> V14(G, 0.0);
+    test_normL2(num_tests, V14, maillage2x2, N2, M2, a, b, 0.0);
+
+    // Test 41
+    vector<double> V15(G, 1.0);
+    test_normL2(num_tests, V15, maillage2x2, N2, M2, a, b, 2.0);
+
+    // Test42
+    vector<double> V16(G, 0.0);
+    for (int s = 0; s < G; s++) {
+        tuple<int,int> coord = invnumgb(N2, M2, s);
+        V16[s] = -a + (2.0 * a) / N2 * get<0>(coord);
+    }
+
+    test_normL2(num_tests, V16, maillage2x2, N2, M2, a, b, sqrt(4.0 / 3.0));
+
+
+    cout << "\n\n\n";
+    cout << "--------------Tests normL2Grad--------------\n";
+
+    // Test 43
+    test_normL2Grad(num_tests, V15, maillage2x2, N2, M2, a, b, 0.0);
+
+    test_normL2Grad(num_tests, V16, maillage2x2, N2, M2, a, b, 2.0);
+
+    vector<double> V_xy(G, 0.0);
+    for (int s = 0; s < G; s++) {
+        tuple<int,int> coord = invnumgb(N2, M2, s);
+        double x_noeud = -a + (2.0 * a) / N2 * get<0>(coord);
+        double y_noeud = -b + (2.0 * b) / M2 * get<1>(coord);
+        V_xy[s] = x_noeud + y_noeud;
+    }
+    test_normL2Grad(num_tests, V_xy, maillage2x2, N2, M2, a, b, sqrt(8.0));
+
 }
 
 
