@@ -820,14 +820,14 @@ int main(){
 
     test_normL2Grad(num_tests, V16, maillage2x2, N2, M2, a, b, 2.0);
 
-    vector<double> V_xy(G, 0.0);
+    vector<double> V17(G, 0.0);
     for (int s = 0; s < G; s++) {
         tuple<int,int> coord = invnumgb(N2, M2, s);
-        double x_noeud = -a + (2.0 * a) / N2 * get<0>(coord);
-        double y_noeud = -b + (2.0 * b) / M2 * get<1>(coord);
-        V_xy[s] = x_noeud + y_noeud;
+        double x = -a + (2.0 * a) / N2 * get<0>(coord);
+        double y = -b + (2.0 * b) / M2 * get<1>(coord);
+        V17[s] = x + y;
     }
-    test_normL2Grad(num_tests, V_xy, maillage2x2, N2, M2, a, b, sqrt(8.0));
+    test_normL2Grad(num_tests, V17, maillage2x2, N2, M2, a, b, sqrt(8.0));
 
 }
 
