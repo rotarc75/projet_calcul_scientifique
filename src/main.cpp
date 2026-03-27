@@ -62,13 +62,12 @@ double f(double x, double y,double eta0, double m,double (* eta) (double,double)
     double k = -(eta0*m*M_PI)/(4.*m*m*M_PI*M_PI +2);
     double t = x*sin(m*M_PI*x)*cos(m*M_PI*y) + y*cos(m*M_PI*x)*sin(m*M_PI*y);
     double o = 2*m*m*M_PI*M_PI*eta(x,y) +1;
-    return k*t + o*up(x,y,m);
+    return k*t + o*up(m,x,y);
 }
 
 
-
 double f0(double x, double y){
-    return f(x,y,0,1,[](double,double){return 1.;});
+    return f(x,y,0,31,[](double,double){return 1.;});
 }
 
 
@@ -94,11 +93,11 @@ int main(){
 
     affiche_maillage(10,14);
 
-    vector<int> valeurs_tests = {2,4,8,16,32,64,128,256,512};
+    vector<int> valeurs_tests = {4,8,16,32,64,128,256};
 
     ofstream fichier("erreurs.txt");
     if (!fichier.is_open()) {
-        cerr << "Erreur lors de l'ouverture du fichier.\n";
+        cout << "Erreur lors de l'ouverture du fichier.\n";
         return 1;
     }
 
@@ -113,14 +112,14 @@ int main(){
         vector<double> B = scdmembre(f0,N,N,maillageNxN,a,b);
 
 
-        vector<double> uh = bicg_stab(B,maillageNxN,N,N,a,b,1e-8,50000,eta1);
+        vector<double> uh = bicg_stab(B,maillageNxN,N,N,a,b,1e-10,100000,eta1);
 
         auto up0 = [](double x, double y){ return up(m,x,y);};
         vector<double> tab_err = erreurs(up0,uh,maillageNxN,N,N,a,b);
 
-        cout << "e0( 2/"<< N << ") = " << tab_err[0] << endl;
-        cout << "e1( 2/"<< N << ") = " << tab_err[1] << endl;
-        cout << "e2( 2/"<< N << ") = " << tab_err[2] << endl;
+        cout << "e0(2/" << N << ") = " << tab_err[0] << ", ";
+        cout << "e1(2/" << N << ") = " << tab_err[1] << ", ";
+        cout << "e2(2/" << N << ") = " << tab_err[2] << endl;
 
 
         fichier << N << " " << tab_err[0] << " " << tab_err[1] << " " << tab_err[2] << "\n";

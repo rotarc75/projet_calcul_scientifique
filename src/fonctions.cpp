@@ -265,8 +265,8 @@ vector<double> scdmembre(double rhsf(double,double), int N, int M, maillage TRG,
 
         // Calcul des contributions des sommets de T aux noeuds
         B[TRG[t].get(0)] += (det * (f0*0.5 + f2*0.5))/6;
-        B[TRG[t].get(1)] += (det * (f1*0.5 + f2*0.5))/6;
-        B[TRG[t].get(2)] += (det * (f0*0.5 + f1*0.5))/6;
+        B[TRG[t].get(1)] += (det * (f0*0.5 + f1*0.5))/6;
+        B[TRG[t].get(2)] += (det * (f1*0.5 + f2*0.5))/6;
     }
 
     return B;
@@ -403,10 +403,8 @@ vector<double> bicg_stab(vector<double> B,maillage TRG, int N, int M, double a,
     vector<double> W = R;
     int it = 0;
 
-    double max_absB = max_abs(B);
-
     // Itérations, bicg_stab selon l'algorithme donné
-    while (max_abs(R)/max_absB > tol && it < max_it){
+    while (max_abs(R) > tol && it < max_it){
         AW = matvec(W,TRG,N,M,a,b,eta);
         double alpha = pdt_sc(R,R_etoile) / pdt_sc(AW,R_etoile);
 
