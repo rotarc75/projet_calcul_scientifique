@@ -427,11 +427,6 @@ vector<double> bicg_stab(vector<double> B,maillage TRG, int N, int M, double a,
 }
 
 
-// double norme_L2 = normL2(X, TRG, N, M, a, b);
-// double norme_L2_Grad = normL2Grad(X, TRG, N, M, a, b);
-// ElementVh solution(X, X, norme_L2, norme_L2_Grad);
-// return solution;
-
 vector<double> erreurs(double (* solExa) (double,double),vector<double> uh,
     maillage TRG, int N, int M, double a, double b){
 

@@ -52,7 +52,7 @@ void affiche_maillage(int N, int M){
 
 
 double up(int m,double x, double y){
-    double c = (4.*m*m*M_PI*M_PI +2);
+    double c = (2.*m*m*M_PI*M_PI + 1);
     return (cos(m*M_PI*x)*cos(m*M_PI*y)) /c ;
 }
 
@@ -103,12 +103,10 @@ int main(){
         auto up0 = [](double x, double y){ return up(m,x,y);};
         vector<double> tab_err = erreurs(up0,uh,maillageNxN,N,N,a,b);
 
-
-
+        cout << "e0( 2/"<< N << ") = " << tab_err[0] << endl;
+        cout << "e1( 2/"<< N << ") = " << tab_err[1] << endl;
+        cout << "e2( 2/"<< N << ") = " << tab_err[2] << endl;
     }
-
-
-
 
 }
 
