@@ -1,0 +1,82 @@
+Le code ci-dessous permet de créer la classe ElementVh, comme suggéré en remarque en début de partie 3. Elle comprend des fonctions get, permettant de récupérer ses différentes propriétés. Cependant, nous n'avons pas trouvé son utilisation utile dans la façon dont nous avons écrit le programme. En effet, nous aurions pu l'implémenter dans l'algorithme bicg\_stab qui aurait renvoyé un ElementVh plutôt que le vecteur<double> X en modifiant la fin de bicg\_stab comme suit :
+
+\begin{codeblock}[alternative fin bicg\_stab]
+vector<double> bicg_stab(vector<double> B,maillage TRG, int N, int M, double a,
+    double b, double tol,int max_it, double (* eta) (double,double)){
+    ...
+    ...
+    ...
+    double norme_L2 = normL2(X, TRG, N, M, a, b);
+    double norme_L2_Grad = normL2Grad(X, TRG, N, M, a, b);
+    ElementVh solution(X, X, norme_L2, norme_L2_Grad);
+return solution;
+}
+\end{codeblock}
+
+Quoiqu'il en soit, nous avons cependant décidé de ne pas l'utiliser et de ne la mettre ici qu'à titre informatif.
+
+\newpage
+
+\begin{codeblock}[elementvh.hpp]
+#ifndef ELEMENTVH_H
+#define ELEMENTVH_H
+
+#include <vector>
+
+using namespace std;
+
+class ElementVh {
+
+private:
+    vector<double> valeurs_noeuds_interieurs;
+    vector<double> valeurs_tous_noeuds;
+
+    double normeL2, normeL2_grad;
+
+public:
+    ElementVh(vector<double> valeurs_noeuds_interieurs, vector<double> valeurs_tous_noeuds,
+        double normeL2, double normeL2_grad);
+    ElementVh();
+    vector<double> get_noeuds_interieurs();
+    vector<double> get_tous_noeuds();
+    double get_norme();
+    double get_norme_grad();
+};
+
+#endif  
+\end{codeblock}
+
+\begin{codeblock}[elementvh.cpp]
+#include "elementvh.hpp"
+
+ElementVh::ElementVh(vector<double> valeurs_noeuds_interieurs, vector<double> valeurs_tous_noeuds,
+    double normeL2, double normeL2_grad){
+    this->valeurs_noeuds_interieurs = valeurs_noeuds_interieurs;
+    this->valeurs_tous_noeuds = valeurs_tous_noeuds;
+    this->normeL2 = normeL2;
+    this->normeL2_grad = normeL2_grad;
+}
+
+ElementVh::ElementVh(){
+    this->valeurs_noeuds_interieurs = vector<double>();
+    this->valeurs_tous_noeuds = vector<double>();
+    this->normeL2 = 0;
+    this->normeL2_grad = 0;
+}
+
+vector<double> ElementVh::get_noeuds_interieurs(){
+    return this->valeurs_noeuds_interieurs;
+}
+
+vector<double> ElementVh::get_tous_noeuds(){
+    return this->valeurs_tous_noeuds;
+}
+
+double ElementVh::get_norme(){
+    return this->normeL2;
+}
+
+double ElementVh::get_norme_grad(){
+    return this->normeL2_grad;
+}
+\end{codeblock}

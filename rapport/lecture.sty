@@ -12,7 +12,12 @@
 \RequirePackage{amsmath, amssymb, amsthm}
 \RequirePackage{tcolorbox}
 \tcbuselibrary{skins, breakable, theorems}
-\RequirePackage{titlesec}
+\RequirePackage{titlesec}#include "triangle.hpp"
+
+% Paquets pour le code
+\RequirePackage{inconsolata}
+\RequirePackage{listings}
+\tcbuselibrary{skins, breakable, theorems, listings}
 
 % Jolis dessins
 \usepackage{tikz}
@@ -22,7 +27,11 @@
 \renewcommand{\thesection}{\arabic{section}}
 
 
-
+% Couleurs pour le code (Style VS Code Light)
+\definecolor{vscblue}{HTML}{0000FF}    % Mots-clés
+\definecolor{vscgreen}{HTML}{008000}   % Commentaires
+\definecolor{vscstring}{HTML}{A31515}  % Chaînes de caractères
+\definecolor{vscgray}{HTML}{808080}    % Numéros de ligne
 
 
 \definecolor{accentcolor}{HTML}{8A1538}
@@ -112,4 +121,57 @@
     attach title to upper=\par\vspace{0.8em}, % Place le titre au-dessus du texte avec un saut de ligne
     before skip=2em, % Espacement rigoureux avant le bloc
     after skip=2em   % Espacement rigoureux après le bloc
+}
+
+% ==========================================
+% Environnement pour le code
+% ==========================================
+
+% --- Configuration globale de listings ---
+\lstset{
+    basicstyle=\ttfamily\small,          % Police monospace par défaut
+    keywordstyle=\color{vscblue}\bfseries,
+    stringstyle=\color{vscstring},
+    commentstyle=\color{vscgreen}\itshape,
+    numberstyle=\tiny\color{vscgray},
+    identifierstyle=\color{black},
+    numbers=left,                        % Numéros à gauche
+    stepnumber=1,
+    numbersep=10pt,                      % Espace entre numéros et code
+    showstringspaces=false,              % Ne pas afficher les espaces dans les strings
+    breaklines=true,                     % Retour à la ligne automatique
+    tabsize=4,
+    extendedchars=true,
+    literate=
+      {é}{{\'e}}1 {è}{{\`e}}1 {ê}{{\^e}}1 {ë}{{\"e}}1
+      {à}{{\`a}}1 {â}{{\^a}}1
+      {î}{{\^i}}1 {ï}{{\"i}}1
+      {ô}{{\^o}}1
+      {û}{{\^u}}1 {ù}{{\`u}}1
+      {ç}{{\c c}}1
+}
+
+% --- Définir le style de boîte pour le code ---
+\tcbset{
+    codestyle/.style={
+        enhanced,
+        breakable,                  % Autorise le saut de page
+        commonstyle,                % Hérite de ton style de base
+        frame hidden,               % Cache complètement le cadre principal
+        boxrule=0pt,                % Force l'épaisseur de toutes les bordures à 0
+        toprule at break=0pt,       % Supprime la ligne en haut lors d'un saut de page
+        bottomrule at break=0pt,    % Supprime la ligne en bas lors d'un saut de page
+        colback=white,              % Maintient le fond blanc
+        left=8pt,                   % Marge pour décoller le texte
+        listing only,
+    },
+}
+
+% --- Création de l'environnement'codeblock' ---
+\newtcblisting{codeblock}[1][]{
+    codestyle,                     % Utilise le nouveau style défini ci-dessus
+    title={#1},                    % Le titre optionnel est utilisé ici
+    fonttitle=\bfseries\ttfamily,   % Police monospace en gras pour le titre
+    attach title to upper=\par\vspace{0.5em}, 
+    % Permet de passer des options supplémentaires à listings via listing options={...}
 }
