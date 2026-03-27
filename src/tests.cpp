@@ -674,7 +674,7 @@ int main(){
     cout << "\n\n\n";
     cout << "--------------Tests matvec--------------\n";
 
-    // Test 24 : Le vecteur nul
+    // Test 24
     vector<double> V = {0.0, 0.0, 0.0, 0.0};
     vector<double> sol_attendue10 = {0.0, 0.0, 0.0, 0.0};
     test_matvec(num_tests, V, maillage1x1, 1,1,1.0,1.0,eta1,sol_attendue10);

@@ -10,7 +10,7 @@ const string BLEU  = "\033[34m";
 const string ORANGE = "\033[38;5;208m";
 const string BLANC = "\033[0m";
 
-
+const int m = 1;
 
 void affiche_maillage(int N, int M){
 
@@ -52,22 +52,22 @@ void affiche_maillage(int N, int M){
 }
 
 
-double up(int m,double x, double y){
+double up(double x, double y){
     double c = (2.*m*m*M_PI*M_PI + 1);
     return (cos(m*M_PI*x)*cos(m*M_PI*y)) /c ;
 }
 
 // Se référer à la question 32)a. Pour la formule
-double f(double x, double y,double eta0, double m,double (* eta) (double,double)){
+double f(double x, double y, double eta0, double (* eta) (double,double)){
     double k = -(eta0*m*M_PI)/(4.*m*m*M_PI*M_PI +2);
     double t = x*sin(m*M_PI*x)*cos(m*M_PI*y) + y*cos(m*M_PI*x)*sin(m*M_PI*y);
     double o = 2*m*m*M_PI*M_PI*eta(x,y) +1;
-    return k*t + o*up(m,x,y);
+    return k*t + o*up(x,y);
 }
 
 
 double f0(double x, double y){
-    return f(x,y,0,31,[](double,double){return 1.;});
+    return f(x,y,0,[](double,double){return 1.;});
 }
 
 
@@ -83,7 +83,7 @@ int main(){
     //const double eta0 = 0.;
     const double a = 1.;
     const double b = 1.;
-    const int m = 31;
+
 
     auto lambda = [](double,double){ return 1.;};
 
@@ -91,9 +91,9 @@ int main(){
 
     // Tests numériques
 
-    affiche_maillage(10,14);
+    //affiche_maillage(10,14);
 
-    vector<int> valeurs_tests = {4,8,16,32,64,128,256};
+    vector<int> valeurs_tests = {4,8,16,20,32,64,128};
 
     ofstream fichier("erreurs.txt");
     if (!fichier.is_open()) {
@@ -114,7 +114,7 @@ int main(){
 
         vector<double> uh = bicg_stab(B,maillageNxN,N,N,a,b,1e-10,100000,eta1);
 
-        auto up0 = [](double x, double y){ return up(m,x,y);};
+        auto up0 = [](double x, double y){ return up(x,y);};
         vector<double> tab_err = erreurs(up0,uh,maillageNxN,N,N,a,b);
 
         cout << "e0(2/" << N << ") = " << tab_err[0] << ", ";
