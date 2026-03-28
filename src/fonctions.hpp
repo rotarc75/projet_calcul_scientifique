@@ -37,7 +37,7 @@ vector<double> matvec(vector<double> V, maillage TRG, int N, int M,
 
 #endif
 
-vector<double> scdmembre(double rhsf(double,double), int N, int M, maillage TRG, double a, double b);
+vector<double> scdmembre(double rhsf(double,double, int), int N, int M, maillage TRG, double a, double b, int m);
 
 double normL2(vector<double> V,maillage TRG, int N, int M, double a, double b);
 
@@ -54,4 +54,4 @@ vector<double> bicg_stab(vector<double> B,maillage TRG, int N, int M, double a,
     double b, double tol,int max_it, double (* eta) (double,double));
 
 
-vector<double> erreurs(double (* solExa) (double,double),vector<double> uh,maillage TRG, int N, int M, double a, double b);
+vector<double> erreurs(double (* solExa) (double,double, int),vector<double> uh,maillage TRG, int N, int M, double a, double b, int m);

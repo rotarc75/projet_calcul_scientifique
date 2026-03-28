@@ -236,8 +236,8 @@ vector<double> matvec(vector<double> V, maillage TRG, int N, int M,
 
 
 
-vector<double> scdmembre(double rhsf(double,double), int N, int M, maillage TRG,
-    double a, double b){
+vector<double> scdmembre(double rhsf(double,double,int), int N, int M, maillage TRG,
+    double a, double b, int m){
 
     vector<double> B((N+1)*(M+1));
     int K = 2*N*M;
@@ -259,9 +259,9 @@ vector<double> scdmembre(double rhsf(double,double), int N, int M, maillage TRG,
         double m2y = (ys[0] + ys[2])/2.;
 
         // Calculs de (f \circ F_T)*(w \circ F_T) en les milieux des côtés du triangles T^
-        double f0 = rhsf(m0x,m0y);
-        double f1 = rhsf(m1x,m1y);
-        double f2 = rhsf(m2x,m2y);
+        double f0 = rhsf(m0x,m0y,m);
+        double f1 = rhsf(m1x,m1y,m);
+        double f2 = rhsf(m2x,m2y,m);
 
         // Calcul des contributions des sommets de T aux noeuds
         B[TRG[t].get(0)] += (det * (f0*0.5 + f2*0.5))/6;
@@ -427,8 +427,8 @@ vector<double> bicg_stab(vector<double> B,maillage TRG, int N, int M, double a,
 }
 
 
-vector<double> erreurs(double (* solExa) (double,double),vector<double> uh,
-    maillage TRG, int N, int M, double a, double b){
+vector<double> erreurs(double (* solExa) (double,double, int),vector<double> uh,
+    maillage TRG, int N, int M, double a, double b, int m){
 
     vector<double> tab_err(3);
     int G = (N+1)*(M+1);
@@ -440,7 +440,7 @@ vector<double> erreurs(double (* solExa) (double,double),vector<double> uh,
         double x = -a + (2*a)/N * get<0>(coord_noeud);
         double y = -b + (2*b)/M * get<1>(coord_noeud);
 
-        uchap[s] = solExa(x,y);
+        uchap[s] = solExa(x,y,m);
     }
 
 
