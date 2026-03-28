@@ -1,0 +1,9 @@
+La structure du code étant un élément essentiel dans un projet, nous y avons porté un soin tout particulier. Il est structuré, en trois fichiers principaux : fonctions.cpp, main.cpp et tests.cpp; contenant respectivement les fonctions relatives au projet, les tests numériques et des tests pour la plupart des fonctions codées.
+
+Afin davantage structurer notre code, nous avons opté pour l'utilisation de classes. Ce choix à engendré bien des questionnements notamment sur la manière de définir nos classes et la pertinence réelle de leur utilisation dans ce projet. Nous n'avons au final, eu l'utilité que d'une seule, la classe Triangle.cpp. Elle nous a permis, entre autre, de plus agréablement manipuler les maillages, qui n'est représenté maintenant que par un tableau de Triangle au lieu d'une matrice. Cette classe est défini par ses 3 attributs : n1, n2, n3 qui correspondent au trois sommets, avec la numérotation des noeuds dans le maillage et la surcharge de l'opérateur == permet une comparaison plus pratique des triangles (cette surcharge est presque obligatoire pour faire les tests dans de bonnes conditions).
+
+Nous avons également fourni un fichier tests.cpp, comme annoncé au début du paragraphe, pour s'assurer que les fonctions codées tout au long du projet, soient correctes et donc que nous travaillons sur de bonnes bases.
+
+Toutes nos tentatives, ne sont pas utilisées dans la version finale. La première aura été de créer une classe noeud.cpp, que nous avons enlevé faute d'utilité et cela s'explique par la très bonne numérotation des sommets dans le maillage qui est autosuffisante. La deuxième est la classe Vh.cpp qui est visible dans le code en annexe. Encore une fois, la manière d'aborder le problème proposée nous a paru plus appropriée et moins lourde que l'utilisation d'une classe. Dans ce que nous visualisions, nous l'utilisions que dans une seule fonction (cf annexe), ce qui justifie son retrait.
+
+

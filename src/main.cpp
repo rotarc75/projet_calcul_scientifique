@@ -2,6 +2,8 @@
 #include <cmath>
 #include <fstream>
 
+#include <functional>
+
 #include "fonctions.hpp"
 
 using namespace std;
@@ -157,7 +159,8 @@ int main(){
     for (int N : valeurs_tests){
         maillage maillageNxN = maillageTR(N,N);
 
-        //auto f0 = std::bind(&f,_1,_2,eta0,m,[](double,double){return 1.;});
+
+        // auto f0 = std::bind(&f,_1,_2,eta0,m,[](double,double){return 1.;});
 
         vector<double> B = scdmembre(f0,N,N,maillageNxN,a,b,m);
 
