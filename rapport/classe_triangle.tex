@@ -1,4 +1,4 @@
-Le code ci-dessous permet de créer la classe Triangle, entièrement définie par le numéro de ses sommets dans le maillage. Elle comprend également une fonction get qui permet de récupérer le numéro de ses sommets individuellement. Nous avons également ajouté une fonction permettant de vérifier si deux triangles sont égaux.
+Le code ci-dessous permet de créer la classe Triangle, entièrement définie par le numéro de ses sommets dans le maillage. Elle comprend également un getter qui renvoie le numéro du sommet demandé. Nous avons également surchargé l'opérateur == afin de facilité les tests.
 
 \begin{codeblock}[triangle.hpp]
 #ifndef TRIANGLE_H
@@ -64,7 +64,7 @@ int max3(int a, int b, int c) {
 
 
 // Surcharge de l'opérateur == pour définir l'égalité de triangles
-bool Triangle::operator==(const Triangle& t) const {
+bool Triangle::operator==(const Triangle &t) const {
     int min1 = min3(n1,n2,n3);
     int max1 = max3(n1,n2,n3);
     int mid1 = n1 + n2 + n3 - min1 - max1;

@@ -39,7 +39,7 @@ int max3(int a, int b, int c) {
 
 
 // Surcharge de l'opérateur == pour définir l'égalité de triangles
-bool Triangle::operator==(const Triangle& t) const {
+bool Triangle::operator==(const Triangle &t) const {
     int min1 = min3(n1,n2,n3);
     int max1 = max3(n1,n2,n3);
     int mid1 = n1 + n2 + n3 - min1 - max1;
