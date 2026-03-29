@@ -128,11 +128,10 @@ int main(){
     cout << "Début des tests numériques\n";
 
     // Déclaration des paramètres
-    //const double eta0 = 0.;
+    // Const double eta0 = 0.;
     const double a = 1.;
     const double b = 1.;
     int m = 1;
-
 
     auto lambda = [](double,double){ return 1.;};
 
@@ -192,7 +191,7 @@ int main(){
     maillage maillage_courbes = maillageTR(N_courbes, N_courbes);
 
     // Tests sur differents m
-    vector<int> valeurs_m = {1, 3, 5, 11};
+    vector<int> valeurs_m = {2, 4, 8, 12};
 
     for (int m_courbe : valeurs_m){
         auto f1_courbe = [](double x, double y, int m_courbe){ return f1(x, y, m_courbe);};
