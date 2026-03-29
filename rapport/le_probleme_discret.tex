@@ -17,14 +17,14 @@
     Soit $v \in \ker I_h$. On a pour tout $0 \leq k \leq G-1$, $v(M_k)=0$. Soit $l \in [\![ \, 0, k-1 \, ]\!]$ et soit $T_l$ un triangle du maillage, de sommets $A_0, A_1$ et $A_2$. \\ \\
     $v_{\vert T_l}$ est affine et d'après la question 17, une application affine est entièrement déterminée par ses valeurs aux trois sommets. \\ \\
     Or $A_0, A_1, A_2$ sont des noeuds. Donc $v(A_i)=0$ pour tous $i \in \{ \, 0,1,2 \, \}$ et ainsi, $v_{\vert T_l}=0$. Ceci étant vrai pour tout triangle, $v=0$ sur $\overline{\Omega}$, et on en déduit que $I_h$ est injective. \\ \\
-    Montrons maintenant que $I_h$ est surjetive. Soit $(y_0, y_1, \dots, y_{G-1}) \in \mathbb{R}^G$. On a :
+    Montrons maintenant que $I_h$ est surjective. Soit $(y_0, y_1, \dots, y_{G-1}) \in \mathbb{R}^G$. On a :
 
     \[
         v_{\vert T_l}(x,y) = \sum_{j=0}^2 y_{l_j}\lambda_j^{T_l}(x,y), \quad \text{où les $y_{l_j}$ sont les images par $v$ des $y_l$ aux noeuds.}
     \]
 
-    On veut vérifier que $v$ est continue sur $\overline{\Omega}$. $v$ étant affine sur chaque triangle, on veut vérifier sa continuité sur les arrêtes des triangles. \\ \\
-    Soient $T_1, T_2$ deux triangles qui ont une arrête $A = [ \, A_0, A_1 \,]$ commune. Alors $\left(v_{\vert T_i}\right)_{\vert A}$ est affine en une variable (puisque l'on est sur un segment). De plus, $\left(v_{\vert T_1}\right)_{\vert A}(A_i) = \left(v_{\vert T_2}\right)_{\vert A}(A_i)$, donc $v_{\vert T_1} = v_{\vert T_2}$. Par suite, $v$ est continue sur $\overline{\Omega}$ et donc $v$ est bien un élément de $V_h$. \\ \\
+    On veut vérifier que $v$ est continue sur $\overline{\Omega}$. $v$ étant affine sur chaque triangle, on veut vérifier sa continuité sur les arêtes des triangles. \\ \\
+    Soient $T_1, T_2$ deux triangles qui ont une arête $A = [ \, A_0, A_1 \,]$ commune. Alors $\left(v_{\vert T_i}\right)_{\vert A}$ est affine en une variable (puisque l'on est sur un segment). De plus, $\left(v_{\vert T_1}\right)_{\vert A}(A_i) = \left(v_{\vert T_2}\right)_{\vert A}(A_i)$, donc $v_{\vert T_1} = v_{\vert T_2}$. Par suite, $v$ est continue sur $\overline{\Omega}$ et donc $v$ est bien un élément de $V_h$. \\ \\
     Comme $I_h$ est un isomorphisme, alors $\dim \mathbb{R}^G = \dim V_h = G$.
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -131,6 +131,6 @@ Comme $\eta (x,y) >0$ pour tout $(x,y) \in \Omega$, à $(x,y)$ fixé, $\eta$ est
 
 \begin{remark*}
 
-    Les réponses aux questions 30 à 32(d) sont données dans le chapitre \ref[sec:testnum]{Tests numériques}.
+    Les réponses aux questions 30 à 32(d) sont données dans le chapitre \hyperref[sec:testnum]{Tests numériques}.
 
 \end{remark*}
