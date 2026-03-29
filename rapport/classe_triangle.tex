@@ -1,4 +1,5 @@
-Le code ci-dessous permet de créer la classe Triangle, entièrement définie par le numéro de ses sommets dans le maillage. Elle comprend également un getter qui renvoie le numéro du sommet demandé. Nous avons également surchargé l'opérateur == afin de facilité les tests.
+Le code ci-dessous permet de créer la classe Triangle, entièrement définie par le numéro de ses sommets dans le maillage. Elle comprend également un getter qui renvoie le numéro du sommet demandé. Nous avons de plus surchargé l'opérateur = afin de faciliter les tests.
+
 
 \begin{codeblock}[triangle.hpp]
 #ifndef TRIANGLE_H
@@ -15,10 +16,8 @@ public:
     int get(int k);
 
     // Surcharge de ==
-    bool operator==(const Triangle &autre) const;
+    bool operator==(const Triangle& autre) const;
 };
-
-
 #endif
 \end{codeblock}
 

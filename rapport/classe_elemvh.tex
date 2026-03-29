@@ -43,14 +43,14 @@ public:
     double get_norme_grad();
 };
 
-#endif  
+#endif
 \end{codeblock}
 
 \begin{codeblock}[elementvh.cpp]
 #include "elementvh.hpp"
 
 ElementVh::ElementVh(vector<double> valeurs_noeuds_interieurs, vector<double> valeurs_tous_noeuds,
-    double normeL2, double normeL2_grad){
+        double normeL2, double normeL2_grad){
     this->valeurs_noeuds_interieurs = valeurs_noeuds_interieurs;
     this->valeurs_tous_noeuds = valeurs_tous_noeuds;
     this->normeL2 = normeL2;
