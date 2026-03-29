@@ -1,5 +1,6 @@
 \label{sec:vh}
 Le code ci-dessous permet de créer la classe ElementVh, comme suggéré en remarque en début de partie 3. Elle comprend des fonctions get, permettant de récupérer ses différentes propriétés. Cependant, nous n'avons pas trouvé son utilisation utile dans la façon dont nous avons écrit le programme. En effet, nous aurions pu l'implémenter dans l'algorithme bicg\_stab qui aurait renvoyé un ElementVh plutôt que le vecteur<double> X en modifiant la fin de bicg\_stab comme suit :
+\vspace{0.8em}
 
 \begin{codeblock}[alternative fin bicg\_stab]
 vector<double> bicg_stab(vector<double> B,maillage TRG, int N, int M, double a,
