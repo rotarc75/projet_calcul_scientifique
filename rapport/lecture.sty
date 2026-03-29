@@ -11,16 +11,16 @@
 \RequirePackage{geometry}
 \RequirePackage{amsmath, amssymb, amsthm}
 \RequirePackage{tcolorbox}
-\tcbuselibrary{skins, breakable, theorems}
-\RequirePackage{titlesec}#include "triangle.hpp"
+\tcbuselibrary{skins, breakable, theorems, listings}
+\RequirePackage{titlesec}
 
 % Paquets pour le code
 \RequirePackage{inconsolata}
 \RequirePackage{listings}
-\tcbuselibrary{skins, breakable, theorems, listings}
+
 
 % Jolis dessins
-\usepackage{tikz}
+\RequirePackage{tikz}
 \usetikzlibrary{shapes.geometric, calc}
 
 \renewcommand{\thechapter}{\Roman{chapter}}
@@ -124,22 +124,34 @@
 }
 
 % ==========================================
-% Environnement pour le code
+% 8. Environnement pour le code (Style VSC DARK - Sécable corrigé)
 % ==========================================
 
-% --- Configuration globale de listings ---
-\lstset{
-    basicstyle=\ttfamily\small,          % Police monospace par défaut
-    keywordstyle=\color{vscblue}\bfseries,
-    stringstyle=\color{vscstring},
+\definecolor{vscbg}{RGB}{30, 30, 30}
+\definecolor{vsctext}{RGB}{212, 212, 212}
+\definecolor{vscgreen}{RGB}{106, 153, 85}
+\definecolor{vscblue}{RGB}{86, 156, 214}
+\definecolor{vscstring}{RGB}{206, 145, 120}
+\definecolor{vscgray}{RGB}{133, 133, 133}
+
+\lstdefinestyle{vscodestyle}{
+    language=C++,
+    backgroundcolor=\color{vscbg},
     commentstyle=\color{vscgreen}\itshape,
+    keywordstyle=\color{vscblue}\bfseries,
     numberstyle=\tiny\color{vscgray},
-    identifierstyle=\color{black},
-    numbers=left,                        % Numéros à gauche
-    stepnumber=1,
-    numbersep=10pt,                      % Espace entre numéros et code
-    showstringspaces=false,              % Ne pas afficher les espaces dans les strings
-    breaklines=true,                     % Retour à la ligne automatique
+    stringstyle=\color{vscstring},
+    % Modification 1 : on place la couleur à la TOUTE FIN du basicstyle
+    basicstyle=\ttfamily\footnotesize\color{vsctext},
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=12pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
     tabsize=4,
     extendedchars=true,
     literate=
@@ -151,27 +163,23 @@
       {ç}{{\c c}}1
 }
 
-% --- Définir le style de boîte pour le code ---
-\tcbset{
-    codestyle/.style={
-        enhanced,
-        breakable,                  % Autorise le saut de page
-        commonstyle,                % Hérite de ton style de base
-        frame hidden,               % Cache complètement le cadre principal
-        boxrule=0pt,                % Force l'épaisseur de toutes les bordures à 0
-        toprule at break=0pt,       % Supprime la ligne en haut lors d'un saut de page
-        bottomrule at break=0pt,    % Supprime la ligne en bas lors d'un saut de page
-        colback=white,              % Maintient le fond blanc
-        left=8pt,                   % Marge pour décoller le texte
-        listing only,
-    },
-}
-
-% --- Création de l'environnement'codeblock' ---
 \newtcblisting{codeblock}[1][]{
-    codestyle,                     % Utilise le nouveau style défini ci-dessus
-    title={#1},                    % Le titre optionnel est utilisé ici
-    fonttitle=\bfseries\ttfamily,   % Police monospace en gras pour le titre
-    attach title to upper=\par\vspace{0.5em}, 
-    % Permet de passer des options supplémentaires à listings via listing options={...}
+    listing only,
+    listing style=vscodestyle,
+    title=#1,
+    fonttitle=\bfseries\ttfamily\footnotesize,
+    coltitle=white,
+    enhanced,
+    breakable,
+    colback=vscbg,
+    colupper=vsctext,
+    boxrule=0pt,
+    frame empty,
+    colbacktitle=black!85,
+    colframe=black!85,
+    arc=3pt,
+    titlerule=0pt,
+    left=6mm,
+    top=2pt,
+    bottom=2pt,
 }
