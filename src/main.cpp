@@ -138,13 +138,11 @@ int main(){
 
     // Tests numériques
 
-    //affiche_maillage(10,14);
-
+    affiche_maillage(10,14);
 
     vector<int> valeurs_tests = {4,8,16,20,32,64};
     vector<int> valeurs_tests1(49);
-    for (int k = 1; k < 50;k++) valeurs_tests1[k] = k+1;
-
+    for (int k = 0; k < 49;k++) valeurs_tests1[k] = k+2;
 
     // Création d'un fichier, pour stocker les erreurs pour l'affichage
 
@@ -155,10 +153,10 @@ int main(){
         return 1;
     }
 
-    fichier << "N e0 e1 e_inf\n";
-    fichier2 << "N e0 e1 e_inf\n";
+    fichier << "N e0 e1 e_2\n";
+    fichier2 << "N log(e0) log(e1) log(e_2)\n";
 
-    // Calculs pour la question 32c
+    // Calculs pour la question 32(c)
     cout << "Calcul des erreurs en cours...\n";
 
     for (int N : valeurs_tests1){
@@ -176,10 +174,10 @@ int main(){
             tab_log_err[i] = log(tab_err[i]);
         }
 
-        // cout << "log(e0(2/" << N << ")) = " << tab_log_err[0] << ", ";
-        // cout << "log(e1(2/" << N << ")) = " << tab_log_err[1] << ", ";
-        // cout << "log(e2(2/" << N << ")) = " << tab_log_err[2] << ", ";
-        // cout << "log(2/" << N << ") = " << log(2./N) << endl;
+        cout << "log(e0(2/" << N << ")) = " << tab_log_err[0] << ", ";
+        cout << "log(e1(2/" << N << ")) = " << tab_log_err[1] << ", ";
+        cout << "log(e2(2/" << N << ")) = " << tab_log_err[2] << ", ";
+        cout << "log(2/" << N << ") = " << log(2./N) << endl;
 
         cout << "e0(2/" << N << ") = " << tab_err[0] << ", ";
         cout << "e1(2/" << N << ") = " << tab_err[1] << ", ";
@@ -189,7 +187,7 @@ int main(){
         fichier2 << N << " " << tab_log_err[0] << " " << tab_log_err[1] << " " << tab_log_err[2] << "\n";
     }
 
-    // debut tests question 32d, maillage 32x32, 50 points par courbe
+    // Début de tests question 32(d), maillage 32x32, 50 points par courbe
 
     cout << "Génération des courbes en cours...\n";
 
@@ -205,7 +203,7 @@ int main(){
 
     maillage maillage_courbes = maillageTR(N_courbes, N_courbes);
 
-    // Tests sur differents m
+    // Tests sur differentes valeurs de m
     vector<int> valeurs_m = {2, 4, 8, 12};
 
     for (int m_courbe : valeurs_m){
