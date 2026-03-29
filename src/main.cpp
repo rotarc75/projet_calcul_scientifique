@@ -181,9 +181,9 @@ int main(){
         // cout << "log(e2(2/" << N << ")) = " << tab_log_err[2] << ", ";
         // cout << "log(2/" << N << ") = " << log(2./N) << endl;
 
-        cout << "e0(2/" << N << ") = " << tab_log_err[0] << ", ";
-        cout << "e1(2/" << N << ") = " << tab_log_err[1] << ", ";
-        cout << "e2(2/" << N << ") = " << tab_log_err[2] << " \n";
+        cout << "e0(2/" << N << ") = " << tab_err[0] << ", ";
+        cout << "e1(2/" << N << ") = " << tab_err[1] << ", ";
+        cout << "e2(2/" << N << ") = " << tab_err[2] << " \n";
 
         fichier << N << " " << tab_err[0] << " " << tab_err[1] << " " << tab_err[2] << "\n";
         fichier2 << N << " " << tab_log_err[0] << " " << tab_log_err[1] << " " << tab_log_err[2] << "\n";
