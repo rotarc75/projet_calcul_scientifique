@@ -128,7 +128,6 @@ int main(){
     cout << "Début des tests numériques\n";
 
     // Déclaration des paramètres
-    // Const double eta0 = 0.;
     const double a = 1.;
     const double b = 1.;
     int m = 1;
@@ -156,20 +155,22 @@ int main(){
     for (int N : valeurs_tests){
         maillage maillageNxN = maillageTR(N,N);
 
-
-        // auto f0 = std::bind(&f,_1,_2,eta0,m,[](double,double){return 1.;});
-
         vector<double> B = scdmembre(f0,N,N,maillageNxN,a,b,m);
 
         vector<double> uh = bicg_stab(B,maillageNxN,N,N,a,b,1e-10,100000,eta1);
 
         auto up0 = [](double x, double y, int m){ return up(x,y,m);};
         vector<double> tab_err = erreurs(up0,uh,maillageNxN,N,N,a,b,m);
+        vector<double> tab_log_err = tab_err;
 
-        cout << "e0(2/" << N << ") = " << tab_err[0] << ", ";
-        cout << "e1(2/" << N << ") = " << tab_err[1] << ", ";
-        cout << "e2(2/" << N << ") = " << tab_err[2] << endl;
+        for (int i = 0; i < tab_log_err.size(); i++){
+            tab_log_err[i] = log(tab_err[i]);
+        }
 
+        cout << "log(e0(2/" << N << ")) = " << tab_log_err[0] << ", ";
+        cout << "log(e1(2/" << N << ")) = " << tab_log_err[1] << ", ";
+        cout << "log(e2(2/" << N << ")) = " << tab_log_err[2] << ", ";
+        cout << "log(2/" << N << ") = " << log(2./N) << endl;
 
         fichier << N << " " << tab_err[0] << " " << tab_err[1] << " " << tab_err[2] << "\n";
     }
