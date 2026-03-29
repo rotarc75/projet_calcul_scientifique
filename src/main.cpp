@@ -105,7 +105,7 @@ double eval_uh(double x, double y, vector<double> uh, maillage TRG, int N, int M
         // Inversion BT
         matrix inv_BT = {{BT[1][1]/detBT, -BT[0][1]/detBT},
                         {-BT[1][0]/detBT, BT[0][0]/detBT}};
-        
+
         // Calcul des lambdas
         double lambda_1 = inv_BT[0][0]*(x - xs[0]) + inv_BT[0][1]*(y - ys[0]);
         double lambda_2 = inv_BT[1][0]*(x - xs[0]) + inv_BT[1][1]*(y - ys[0]);
@@ -116,7 +116,7 @@ double eval_uh(double x, double y, vector<double> uh, maillage TRG, int N, int M
 
             // Alors (x,y) est dans ce triangle
             double eval = lambda_0*uh[T.get(0)] + lambda_1*uh[T.get(1)] + lambda_2*uh[T.get(2)];
-            
+
             return eval;
         }
     }
@@ -138,21 +138,30 @@ int main(){
 
     // Tests numériques
 
-    affiche_maillage(10,14);
+    //affiche_maillage(10,14);
 
-    cout << "Calcul des erreurs en cours...\n";
 
     vector<int> valeurs_tests = {4,8,16,20,32,64};
+    vector<int> valeurs_tests1(49);
+    for (int k = 1; k < 50;k++) valeurs_tests1[k] = k+1;
+
+
+    // Création d'un fichier, pour stocker les erreurs pour l'affichage
 
     ofstream fichier("erreurs.txt");
-    if (!fichier.is_open()) {
-        cout << "Erreur lors de l'ouverture du fichier.\n";
+    ofstream fichier2("log_erreurs.txt");
+    if (!fichier.is_open() || !fichier2.is_open()) {
+        cout << "Erreur lors de l'ouverture d'un fichier.\n";
         return 1;
     }
 
     fichier << "N e0 e1 e_inf\n";
+    fichier2 << "N e0 e1 e_inf\n";
 
-    for (int N : valeurs_tests){
+    // Calculs pour la question 32c
+    cout << "Calcul des erreurs en cours...\n";
+
+    for (int N : valeurs_tests1){
         maillage maillageNxN = maillageTR(N,N);
 
         vector<double> B = scdmembre(f0,N,N,maillageNxN,a,b,m);
@@ -161,18 +170,23 @@ int main(){
 
         auto up0 = [](double x, double y, int m){ return up(x,y,m);};
         vector<double> tab_err = erreurs(up0,uh,maillageNxN,N,N,a,b,m);
-        vector<double> tab_log_err = tab_err;
+        vector<double> tab_log_err(tab_err.size());
 
         for (int i = 0; i < tab_log_err.size(); i++){
             tab_log_err[i] = log(tab_err[i]);
         }
 
-        cout << "log(e0(2/" << N << ")) = " << tab_log_err[0] << ", ";
-        cout << "log(e1(2/" << N << ")) = " << tab_log_err[1] << ", ";
-        cout << "log(e2(2/" << N << ")) = " << tab_log_err[2] << ", ";
-        cout << "log(2/" << N << ") = " << log(2./N) << endl;
+        // cout << "log(e0(2/" << N << ")) = " << tab_log_err[0] << ", ";
+        // cout << "log(e1(2/" << N << ")) = " << tab_log_err[1] << ", ";
+        // cout << "log(e2(2/" << N << ")) = " << tab_log_err[2] << ", ";
+        // cout << "log(2/" << N << ") = " << log(2./N) << endl;
+
+        cout << "e0(2/" << N << ") = " << tab_log_err[0] << ", ";
+        cout << "e1(2/" << N << ") = " << tab_log_err[1] << ", ";
+        cout << "e2(2/" << N << ") = " << tab_log_err[2] << " \n";
 
         fichier << N << " " << tab_err[0] << " " << tab_err[1] << " " << tab_err[2] << "\n";
+        fichier2 << N << " " << tab_log_err[0] << " " << tab_log_err[1] << " " << tab_log_err[2] << "\n";
     }
 
     // debut tests question 32d, maillage 32x32, 50 points par courbe
@@ -197,7 +211,7 @@ int main(){
     for (int m_courbe : valeurs_m){
         auto f1_courbe = [](double x, double y, int m_courbe){ return f1(x, y, m_courbe);};
         vector<double> B_courbe = scdmembre(f1_courbe, N_courbes, N_courbes, maillage_courbes, a, b, m_courbe);
-    
+
         auto eta1_courbe = [](double x, double y){return eta(1.,x,y);};
         vector<double> uh_courbe = bicg_stab(B_courbe, maillage_courbes, N_courbes, N_courbes, a, b, 1e-10, 100000, eta1_courbe);
 
