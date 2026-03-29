@@ -283,10 +283,10 @@ void test_max_abs(int &num_test, vector<double> V, double sol_attendue){
 }
 
 
-void test_scdmembre(int &num_test, double rhsf(double,double), int N, int M, maillage TRG, double a, double b, vector<double> sol_attendue){
+void test_scdmembre(int &num_test, double rhsf(double,double,int), int N, int M, maillage TRG, double a, double b, int m, vector<double> sol_attendue){
 
 
-    vector<double> sol_obtenue = scdmembre(rhsf,N,M,TRG,a,b);
+    vector<double> sol_obtenue = scdmembre(rhsf,N,M,TRG,a,b,m);
     bool reussi = true;
     int K = sol_attendue.size();
     double epsilon = 1e-9;
@@ -335,6 +335,35 @@ void test_normL2Grad(int &num_test, vector<double> V, maillage TRG, int N, int M
 
     num_test++;
 }
+
+
+
+void test_bicg_stab(int &num_test, vector<double> B,maillage TRG, int N, int M,
+    double a, double b, double tol,int max_it, double (* eta) (double,double),
+    vector<double> sol_attendue){
+
+    vector<double> sol_obtenue = bicg_stab(B,TRG,N,M,a,b,tol,max_it,eta);
+    bool reussi = true;
+    int K = sol_attendue.size();
+    double epsilon = 1e-9;
+
+    for (int k = 0; k < K; k++){
+        if (abs(sol_attendue[k] - sol_obtenue[k]) > epsilon){
+            reussi = false;
+            break;
+        }
+    }
+
+    if (reussi){
+        cout << VERT << "Test "<<num_test<<" : réussi !\n" << BLANC;
+    } else {
+        cout << ROUGE << "Test "<<num_test<<" : échoué !\n" << BLANC;
+        cout << "   Pas d'affichage de debug pour le moment.\n";
+    }
+
+    num_test++;
+}
+
 
 double eta1(double x, double y) {
     return 1.0;
@@ -524,8 +553,6 @@ int main(){
     test_maillageTR(num_tests, 3, 3, maillage5);
 
 
-
-
     cout << "\n\n\n";
     cout << "--------------Tests CalcMatBT--------------\n";
 
@@ -536,6 +563,7 @@ int main(){
     matrix BT1 = {{1.0, 0.0},{0.0, 1.0}};
     test_CalcMatBT(num_tests, xs1, ys1, BT1);
 
+
     // Test 13
     vector<double> xs2 = {1.0, 4.0, 2.0};
     vector<double> ys2 = {1.0, 2.0, 5.0};
@@ -543,7 +571,7 @@ int main(){
     test_CalcMatBT(num_tests, xs2, ys2, BT2);
 
 
-    // Test 14 : un triangle plat
+    // Test 14
     vector<double> xs3 = {1.0, 2.0, 3.0};
     vector<double> ys3 = {1.0, 2.0, 3.0};
     matrix BT3 = {{1.0, 2.0},{1.0, 2.0}};
@@ -553,6 +581,7 @@ int main(){
 
     cout << "\n\n\n";
     cout << "--------------Tests integ_eta_triang--------------\n";
+
 
     // Test 15 : eta (x,y) = 1
     int N1 = 2;
@@ -565,14 +594,12 @@ int main(){
 
 
     // Test 16 : eta(x,y) = x + 2y + 5
-
     maillage maillage1x1 =   maillageTR(1,1);
     vector<double> sol_attendue2 = {32./3., 28./3.};
     test_integ_eta_triang(num_tests, eta2, maillage1x1, 1, 1, 1.0, 1.0, sol_attendue2);
 
 
     // Test 17 : eta(x,y) = x² + y² + 1
-
     vector<double> sol_attendue3 = {10.0 / 3.0, 10.0 / 3.0};
 
     test_integ_eta_triang(num_tests, eta3, maillage1x1, 1, 1, 1.0, 1.0, sol_attendue3);
@@ -581,7 +608,8 @@ int main(){
     cout << "\n\n\n";
     cout << "--------------Tests DiffTerm--------------\n";
 
-    // Test 18 : triangle de référence
+
+    // Test 18
     vector<double> xs4 = {0.0, 1.0, 0.0};
     vector<double> ys4 = {0.0, 0.0, 1.0};
     duplix T1 = {xs4, ys4};
@@ -594,6 +622,7 @@ int main(){
     };
 
     test_DiffTerm(num_tests, T1, val1, sol_attendue4);
+
 
     // Test 19
     vector<double> xs5 = {0.0, 2.0, 1.0};
@@ -608,6 +637,7 @@ int main(){
     };
 
     test_DiffTerm(num_tests, T2, val2, sol_attendue5);
+
 
     // Test 20
     vector<double> xs6 = {1.0, 3.0, 1.0};
@@ -772,17 +802,17 @@ int main(){
 
     // Test 38
     vector<double> sol_attendue17(11*15, 0.0);
-    auto f0 = [](double,double){return 0.;};
+    auto f0 = [](double,double,int){return 0.;};
     maillage maillage10x14 = maillageTR(10,14);
-    test_scdmembre(num_tests, f0 , 10, 14, maillage10x14, 1., 1., sol_attendue17);
+    test_scdmembre(num_tests, f0 , 10, 14, maillage10x14, 1., 1., 1, sol_attendue17);
 
 
 
     // Test 39
-    auto f1 = [](double,double){return 1.0;};
+    auto f1 = [](double,double,int){return 1.0;};
     double aire_T = (2.0 * 2.0) / 6.0;
     vector<double> sol_attendue18 = {2*aire_T,aire_T,aire_T,2*aire_T};
-    test_scdmembre(num_tests, f1, 1, 1, maillage1x1, 1.0, 1.0, sol_attendue18);
+    test_scdmembre(num_tests, f1, 1, 1, maillage1x1, 1.0, 1.0, 1, sol_attendue18);
 
 
 
@@ -815,19 +845,45 @@ int main(){
     cout << "\n\n\n";
     cout << "--------------Tests normL2Grad--------------\n";
 
+
     // Test 43
     test_normL2Grad(num_tests, V15, maillage2x2, N2, M2, a, b, 0.0);
 
+    // Test 44
     test_normL2Grad(num_tests, V16, maillage2x2, N2, M2, a, b, 2.0);
 
-    vector<double> V_xy(G, 0.0);
+    vector<double> V17(G, 0.0);
     for (int s = 0; s < G; s++) {
         tuple<int,int> coord = invnumgb(N2, M2, s);
         double x_noeud = -a + (2.0 * a) / N2 * get<0>(coord);
         double y_noeud = -b + (2.0 * b) / M2 * get<1>(coord);
-        V_xy[s] = x_noeud + y_noeud;
+        V17[s] = x_noeud + y_noeud;
     }
-    test_normL2Grad(num_tests, V_xy, maillage2x2, N2, M2, a, b, sqrt(8.0));
+
+    // Test 45
+    test_normL2Grad(num_tests, V17, maillage2x2, N2, M2, a, b, sqrt(8.0));
+
+
+
+    cout << "\n\n\n";
+    cout << "--------------Test bicg_stab--------------\n";
+
+
+    // Test 46
+    int N3 = 2, M3 = 2;
+    double a3 = 1.0, b3 = 1.0;
+    int G3 = (N3 + 1) * (M3 + 1);
+
+    vector<double> sol_exacte = {8.,-3.,6.,-9.81,3.14,2.72,7.1,4.2,-5.3};
+
+
+    vector<double> B = matvec(sol_exacte, maillage2x2, N3, M3, a3, b3, eta1);
+
+    double tol = 1e-10;
+    int max_it = 2000;
+
+
+    test_bicg_stab(num_tests, B, maillage2x2, N3, M3, a3, b3, tol, max_it, eta1, sol_exacte);
 
 }
 
