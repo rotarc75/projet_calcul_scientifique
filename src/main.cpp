@@ -143,7 +143,7 @@ int main(){
 
     cout << "Calcul des erreurs en cours...\n";
 
-    vector<int> valeurs_tests = {4,8,16,20,32,64,128};
+    vector<int> valeurs_tests = {4,8,16,20,32,64};
 
     ofstream fichier("erreurs.txt");
     if (!fichier.is_open()) {
