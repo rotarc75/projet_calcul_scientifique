@@ -12,8 +12,6 @@ const string BLEU  = "\033[34m";
 const string ORANGE = "\033[38;5;208m";
 const string BLANC = "\033[0m";
 
-const int m = 1;
-
 void affiche_maillage(int N, int M){
 
     cout << "Affichage du maillage pour N = "<< N << ", M = "<<M<<".\n";
@@ -85,8 +83,8 @@ double eval_uh(double x, double y, vector<double> uh, maillage TRG, int N, int M
     // On cherche à identifier dans quel triangle se trouve (x,y)
     double h1 = (2*a)/N;
     double h2 = (2*b)/M;
-    int i = (int) (x+a)/h1;
-    int j = (int) (y+b)/h2;
+    int i = (int) ((x+a)/h1);
+    int j = (int) ((y+b)/h2);
 
     int l = 2*j*N+2*i;
 
@@ -187,14 +185,14 @@ int main(){
         return 1;
     }
 
-    fichier1 << "m x u^h u^p";
+    fichier1 << "m x u^h u^p\n";
     double pas = 2./50;
     int N_courbes = 32;
 
     maillage maillage_courbes = maillageTR(N_courbes, N_courbes);
 
     // Tests sur differents m
-    vector<int> valeurs_m = {1, 2, 5, 10};
+    vector<int> valeurs_m = {1, 3, 5, 11};
 
     for (int m_courbe : valeurs_m){
         auto f1_courbe = [](double x, double y, int m_courbe){ return f1(x, y, m_courbe);};
